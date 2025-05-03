@@ -48,14 +48,14 @@ import * as React from 'react';
 import { Icons } from '../icons';
 import { OrgSwitcher } from '../org-switcher';
 export const company = {
-  name: 'Acme Inc',
+  name: 'D-Dashboard',
   logo: IconPhotoUp,
   plan: 'Enterprise'
 };
 
 const tenants = [
-  { id: '1', name: 'Acme Inc' },
-  { id: '2', name: 'Beta Corp' },
+  { id: '1', name: 'Maps Tracker' },
+  { id: '2', name: 'Dechosiast' },
   { id: '3', name: 'Gamma Ltd' }
 ];
 
