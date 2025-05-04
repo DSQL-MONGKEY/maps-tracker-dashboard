@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase/server';
 
 export async function POST(req: Request) {
    try {
+
       const payload = await req.json();
       const { name, description } = payload;
 
@@ -32,16 +33,21 @@ export async function POST(req: Request) {
          data 
       }, { status: 201 });
 
-   } catch (error: any) {
-      return NextResponse.json({
-         error: 'An error occurred while processing your request',
-         details: error.message
-      }, { status: 500 });
+   } catch (error) {
+
+      if (error instanceof Error) {
+         return NextResponse.json({
+            error: 'An error occurred while processing your request',
+            details: error.message
+         }, { status: 500 });
+      }
+
    }
 }
 
 export async function GET() {
    try {
+
       const { data, error } = await supabase
          .from('devices')
          .select('*')
@@ -58,11 +64,13 @@ export async function GET() {
       }, { status: 200 })
 
    } catch (error) {
+
       if(error instanceof Error) {
          return NextResponse.json({
             error: 'An error occurred while fetching devices',
             details: error.message
          }, { status: 500 });
       }
+
    }
 }
