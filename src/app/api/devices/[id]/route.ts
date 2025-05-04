@@ -1,12 +1,8 @@
 import { supabase } from "@/lib/supabase/server";
-import { Delete } from "lucide-react";
+import { RouteParams } from "@/types";
 import { NextResponse } from "next/server";
 
-type RouteParams = {
-   params: {
-      id: string
-   };
-}
+
 
 export async function GET(req: Request, { params }: RouteParams, ) {
    try {
@@ -41,6 +37,7 @@ export async function GET(req: Request, { params }: RouteParams, ) {
 
 export async function PUT(req: Request, { params }: RouteParams) {
    try {
+
       const { id } = params;
       const body = await req.json();
       const { name, description } = body;
@@ -72,23 +69,26 @@ export async function PUT(req: Request, { params }: RouteParams) {
       }, { status: 200 });
 
    } catch(error) {
+
       if(error instanceof Error) {
          return NextResponse.json({
             error: 'An error occurred while processing your request',
             details: error.message
          }, { status: 500 });
       }
+
    }
 }
 
 export async function DELETE(req: Request, { params }: RouteParams) {
    try {
+
       const { id } = params;
       const {data, error} = await supabase
          .from('devices')
          .delete()
          .eq('id', id)
-         .select()
+         .select();
       
       if(error) {
          return NextResponse.json({
@@ -104,11 +104,13 @@ export async function DELETE(req: Request, { params }: RouteParams) {
       }, { status: 200 });
    
    } catch(error) {
+
       if(error instanceof Error) {
          return NextResponse.json({
             error: 'An error occurred while processing your request',
             details: error.message
          }, { status: 500 });
       }
+
    }
 }
