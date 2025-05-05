@@ -1,10 +1,9 @@
+import ClientMapWrapper from '@/components/maps/client-map-wrapper';
 import PageContainer from '@/components/layout/page-container';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
-import ProductListingPage from '@/features/products/components/product-listing';
-import { searchParamsCache, serialize } from '@/lib/searchparams';
+import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { IconPlus } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -19,7 +18,8 @@ type pageProps = {
   searchParams: Promise<SearchParams>;
 };
 
-export default async function Page(props: pageProps) {
+
+export default async function MapsPage(props: pageProps) {
   const searchParams = await props.searchParams;
   // Allow nested RSCs to access the search params (in a type-safe way)
   searchParamsCache.parse(searchParams);
@@ -32,26 +32,24 @@ export default async function Page(props: pageProps) {
       <div className='flex flex-1 flex-col space-y-4'>
         <div className='flex items-start justify-between'>
           <Heading
-            title='Products'
-            description='Manage products (Server side table functionalities.)'
+            title='Maps'
+            description='Interactive map to track devices in real-time'
           />
           <Link
-            href='/dashboard/product/new'
+            href='/dashboard/maps/details'
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
             <IconPlus className='mr-2 h-4 w-4' /> Add New
           </Link>
         </div>
         <Separator />
-        <Suspense
-          // key={key}
-          fallback={
-            <DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />
-          }
-        >
-          <ProductListingPage />
-        </Suspense>
+          <div className='w-full h-[500px] flex-1'>
+            <Suspense>
+              <ClientMapWrapper />
+            </Suspense>
+          </div>
       </div>
     </PageContainer>
   );
 }
+
