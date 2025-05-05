@@ -5,7 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 're
 import L from 'leaflet';
 import { OpenStreetMapProvider, SearchControl } from 'leaflet-geosearch'
 import { supabase } from '@/lib/supabase/server';
-import { colors } from '@clerk/themes/dist/clerk-js/src/ui/foundations/colors';
+
 
 interface Tracking {
    id: string;
