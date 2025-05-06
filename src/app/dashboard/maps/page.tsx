@@ -28,7 +28,7 @@ export default async function MapsPage(props: pageProps) {
   // const key = serialize({ ...searchParams });
 
   return (
-    <PageContainer scrollable={false}>
+    <PageContainer scrollable={true}>
       <div className='flex flex-1 flex-col space-y-4'>
         <div className='flex items-start justify-between'>
           <Heading
@@ -48,6 +48,8 @@ export default async function MapsPage(props: pageProps) {
               <ClientMapWrapper />
             </Suspense>
           </div>
+          
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio, deserunt necessitatibus vero blanditiis cum molestiae quibusdam eveniet veniam quos iure consequatur enim repudiandae praesentium eum officia facere repellat dolore placeat eos nobis, tempore porro ipsum. Tempora, temporibus! Fugiat fuga iusto cum facere aliquam ad itaque pariatur, necessitatibus, architecto earum perspiciatis et nostrum ab eligendi repellat ea molestiae. Soluta, voluptates fugiat. Ratione perferendis maxime laborum! Magni voluptatibus nobis labore amet quia obcaecati soluta, similique perferendis asperiores voluptas ab nisi veniam cumque architecto. Enim delectus possimus, obcaecati dolore eius, perferendis adipisci ab aliquam a repudiandae nemo labore fugit quam earum quos sint optio non laudantium aliquid provident voluptas! Eaque ipsum eligendi, veniam qui repellat doloribus sequi voluptate officiis mollitia neque quod tempore tenetur nihil alias ex, hic quae. Aspernatur ut unde iste quae quas tempora, voluptas itaque, quia enim nesciunt officiis incidunt? Repudiandae ut deleniti, enim accusamus ipsum ex, nihil non eius voluptatum fugiat deserunt voluptate unde aut ab? Culpa assumenda optio pariatur cupiditate repellendus modi incidunt deleniti aliquam, repudiandae necessitatibus doloribus sequi numquam quisquam voluptates obcaecati nihil sint architecto rerum et reprehenderit eius. Enim quia a praesentium? Nihil est nam culpa? Exercitationem tempora veniam neque excepturi unde corrupti magnam impedit mollitia.
       </div>
     </PageContainer>
   );
