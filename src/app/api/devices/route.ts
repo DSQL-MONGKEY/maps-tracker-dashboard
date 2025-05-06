@@ -5,20 +5,20 @@ export async function POST(req: Request) {
    try {
 
       const payload = await req.json();
-      const { name, description } = payload;
+      const { name, description, status, type } = payload;
 
 
       // Validasi
-      if (!name || !description) {
+      if (!name || !type) {
          return NextResponse.json(
-            { error: 'Name and description are required' },
+            { error: 'Name and type are required' },
             { status: 400 }
          );
       }
 
       const { data, error } = await supabase
          .from('devices')
-         .insert([{ name, description }])
+         .insert([{ name, description, status, type }])
          .select()
 
       if (error) {
