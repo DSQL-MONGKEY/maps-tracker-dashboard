@@ -55,7 +55,7 @@ export async function GET() {
 
       const { data, error }= await supabase
          .from('trackings')
-         .select(`*, devices(name)`)
+         .select(`*, devices(name, type)`)
          .order('created_at', { ascending: false });
 
       if(error) {
