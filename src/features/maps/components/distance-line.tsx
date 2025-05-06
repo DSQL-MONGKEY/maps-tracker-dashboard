@@ -10,9 +10,9 @@ interface Device {
 }
 
 interface Props {
-  fromId: string;
-  toId: string;
-  devices: Device[];
+   fromId: string;
+   toId: string;
+   devices: Device[];
 }
 
 export default function DistanceLine({ fromId, toId, devices }: Props) {
