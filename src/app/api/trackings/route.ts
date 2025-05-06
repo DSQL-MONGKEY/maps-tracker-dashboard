@@ -14,14 +14,13 @@ export async function POST(req: Request) {
          rssi,
          message,
          snr,
-         speed,
          is_emergency
       } = body;
 
       const { data, error } = await supabase
          .from('trackings')
          .insert({ 
-            device_id, latitude, longitude, altitude, rssi, message, snr, speed, is_emergency 
+            device_id, latitude, longitude, altitude, rssi, message, snr, is_emergency 
          })
          .select();
 
@@ -56,7 +55,7 @@ export async function GET() {
 
       const { data, error }= await supabase
          .from('trackings')
-         .select('*')
+         .select(`*, devices(name)`)
          .order('created_at', { ascending: false });
 
       if(error) {
