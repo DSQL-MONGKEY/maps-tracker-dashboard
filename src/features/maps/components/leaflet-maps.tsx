@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, Polyline, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { OpenStreetMapProvider, SearchControl } from 'leaflet-geosearch'
 import { supabase } from '@/lib/supabase/server';
+import Link from 'next/link';
+import DistanceLine from './distance-line';
 
 
-interface Tracking {
+export interface Tracking {
    id: string;
    device_id: string;
    holder_name: string;
@@ -19,7 +21,8 @@ interface Tracking {
    createdAt: string;
    updatedAt: string;
    devices: {
-      name: string
+      name: string,
+      type: string,
    }
 }  
 
@@ -27,6 +30,15 @@ const defaultPosition: [number, number] = [-6.393875, 106.822557]; // Depok
 
 const deviceMarkerIcon = new L.Icon({
       iconUrl: '/icons/map-marker.png',
+      iconSize: [35, 51],
+      iconAnchor: [12, 41],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+      popupAnchor: [1, -35],
+      shadowSize: [41, 41],
+});
+
+const baseMarkerIcon = new L.Icon({
+      iconUrl: '/icons/map-marker-base.png',
       iconSize: [35, 51],
       iconAnchor: [12, 41],
       shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
@@ -54,9 +66,6 @@ const MapEvents = ({ onMapClick }) => {
 
    return null;
 };
-
-
-
 
 
 //@ts-ignore
@@ -145,12 +154,13 @@ export default function Map() {
             const parsed: Tracking[] = JSON.parse(cached);
             setTrackings(parsed); 
          } catch{
-            console.log('Error parsing cached data');
             localStorage.removeItem('cached-trackings');
          }
+      } else {
+         fetchTrackings();
       }
 
-      fetchTrackings();
+      
 
       const channel = supabase
          .channel('trackings')
@@ -195,7 +205,7 @@ export default function Map() {
                      <Marker 
                      key={track.id} 
                      position={[track.latitude, track.longitude]}
-                     icon={deviceMarkerIcon}
+                     icon={track.devices.type === 'base-station' ? baseMarkerIcon : deviceMarkerIcon}
                   >
                      <Popup>
                         <div className="flex flex-col gap-1">
@@ -205,8 +215,13 @@ export default function Map() {
                            <span>
                               Device Holder: {track.holder_name}
                            </span>
-                           <span>
-                              Coordinate: {`${track.latitude}, ${track.longitude}`}
+                           <span className="flex gap-1">
+                              Coordinate:
+                              <Link 
+                              target='_blank'
+                              href={`https://www.google.com/maps/search/${track.latitude},${track.longitude}`} >
+                              {`${track.latitude}, ${track.longitude}`}
+                              </Link>
                            </span>
                            <span>
                               RSSI: {track.rssi}
@@ -221,6 +236,12 @@ export default function Map() {
                      </Popup>
                   </Marker>     
             ))}
+
+            <DistanceLine 
+               fromId={''} 
+               toId={''} 
+               devices={[]} 
+            />
 
          {markerPosition && (
             <Marker
