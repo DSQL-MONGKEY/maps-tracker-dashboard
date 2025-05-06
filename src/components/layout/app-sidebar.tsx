@@ -54,9 +54,9 @@ export const company = {
 };
 
 const tenants = [
-  { id: '1', name: 'Maps Tracker' },
-  { id: '2', name: 'Dechosiast' },
-  { id: '3', name: 'Gamma Ltd' }
+  { id: '1', name: 'LoRa System' },
+  { id: '2', name: 'Shazam' },
+  { id: '3', name: 'Maps Tracker' },
 ];
 
 export default function AppSidebar() {
@@ -64,6 +64,7 @@ export default function AppSidebar() {
   const { isOpen } = useMediaQuery();
   const { user } = useUser();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSwitchTenant = (_tenantId: string) => {
     // Tenant switching functionality would be implemented here
   };
