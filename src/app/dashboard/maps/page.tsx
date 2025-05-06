@@ -9,15 +9,15 @@ import { IconPlus } from '@tabler/icons-react';
 import Link from 'next/link';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
+import DistanceFormSelector from '@/features/maps/components/distance-form-selector';
 
 export const metadata = {
-  title: 'Dashboard: Products'
+  title: 'Dashboard: Maps'
 };
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
 };
-
 
 export default async function MapsPage(props: pageProps) {
   const searchParams = await props.searchParams;
@@ -43,11 +43,12 @@ export default async function MapsPage(props: pageProps) {
           </Link>
         </div>
         <Separator />
-          <div className='w-full h-[500px] flex-1'>
-            <Suspense>
+          <Suspense>
+            <div className='w-full h-[500px] flex-1'>
               <ClientMapWrapper />
-            </Suspense>
-          </div>
+            </div>
+            <DistanceFormSelector />
+          </Suspense>
       </div>
     </PageContainer>
   );
