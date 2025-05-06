@@ -157,8 +157,10 @@
   animation: reveal 0.4s ease-in-out forwards;
 }
 
-@layer utilities {
-  .leaflet-control-geosearch .leaflet-control-geosearch-input {
-    @apply text-black bg-white dark:text-slate-400 dark:bg-gray-800;
-  }
+.leaflet-touch .leaflet-geosearch-bar form input {
+  color: #183B4E;
+}
+
+.leaflet-control-geosearch .results {
+  color: #555;
 }
