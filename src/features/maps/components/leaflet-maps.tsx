@@ -7,6 +7,8 @@ import { OpenStreetMapProvider, SearchControl } from 'leaflet-geosearch'
 import { supabase } from '@/lib/supabase/server';
 import Link from 'next/link';
 import DistanceLine from './distance-line';
+import { useTrackingStore } from '@/stores/trackings';
+import { useMapSelectionStore } from '@/stores/map-selection-state';
 
 
 export interface Tracking {
@@ -18,8 +20,8 @@ export interface Tracking {
    latitude: number;
    longitude: number;
    is_emergency: boolean;
-   createdAt: string;
-   updatedAt: string;
+   created_at: string;
+   updated_at: string;
    devices: {
       name: string,
       type: string,
@@ -73,6 +75,9 @@ export default function Map() {
    const [trackings, setTrackings] = useState<Tracking[]>([]);
    const [markerPosition, setMarkerPosition] = useState(null);
    const [selectedLocation, setSelectedLocation] = useState<[number, number]>([0, 0]);
+
+   const { latestMode, fromId, toId } = useMapSelectionStore();
+   const { filteredTrackings } = useTrackingStore();
    
    const handleMapClick = (latlng: any) => {
       const { lat, lng } = latlng;
@@ -90,14 +95,15 @@ export default function Map() {
          });
 
          const resJson = await res.json();
-         console.log('resJson', resJson);
          
          if(resJson.success && resJson.data) {
             setTrackings(resJson.data);
             localStorage.setItem('cached-trackings', JSON.stringify(resJson.data));
          }
       } catch (error) {
-         console.log('Error fetching data:', error);
+         if(error instanceof Error) {
+            return null;
+         }
       }
    }
 
@@ -170,14 +176,11 @@ export default function Map() {
                schema: 'public',
                table: 'trackings'
             },
-            (payload) => {
-               console.log('Changes received!', payload);
+            () => {
                fetchTrackings();
             }
          )
-         .subscribe((status) => {
-            console.log('Subscription status:', status);
-         })
+         .subscribe()
 
          return () => {
             supabase.removeChannel(channel);
@@ -197,7 +200,7 @@ export default function Map() {
          <MapSetup />
          <MapEvents onMapClick={handleMapClick} />
 
-         {trackings
+         {(!latestMode ? filteredTrackings : trackings)
          .filter(track =>
                typeof track.latitude === 'number' &&
                typeof track.longitude === 'number')
@@ -238,8 +241,8 @@ export default function Map() {
             ))}
 
             <DistanceLine 
-               fromId={''} 
-               toId={''} 
+               fromId={fromId!} 
+               toId={toId!} 
                devices={[]} 
             />
 
