@@ -1,6 +1,7 @@
 'use client';
 import { Polyline, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
+import { useTrackingStore } from '@/stores/trackings';
 
 interface Device {
   id: string;
@@ -15,9 +16,11 @@ interface Props {
    devices: Device[];
 }
 
-export default function DistanceLine({ fromId, toId, devices }: Props) {
-   const fromDevice = devices.find((d) => d.id === fromId);
-   const toDevice = devices.find((d) => d.id === toId);
+export default function DistanceLine({ fromId, toId }: Props) {
+   const { filteredTrackings } = useTrackingStore();
+
+   const fromDevice = filteredTrackings.find((d) => d.id === fromId);
+   const toDevice = filteredTrackings.find((d) => d.id === toId);
 
    if (!fromDevice || !toDevice) return null;
 
@@ -32,7 +35,7 @@ export default function DistanceLine({ fromId, toId, devices }: Props) {
 
    return (
       <>
-         <Polyline positions={[[fromLatLng.lat, fromLatLng.lng], [toLatLng.lat, toLatLng.lng]]} color="blue">
+         <Polyline positions={[[fromLatLng.lat, fromLatLng.lng], [toLatLng.lat, toLatLng.lng]]} color="yellow">
             <Tooltip 
                permanent 
                offset={[0, -10]}
