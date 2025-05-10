@@ -10,7 +10,7 @@ export async function GET(req: Request,{ params }: RouteParams) {
 
       const { data, error } = await supabase
          .from('trackings')
-         .select('*')
+         .select(`*, devices(name, type)`)
          .eq('id', id)
          .single();
 
