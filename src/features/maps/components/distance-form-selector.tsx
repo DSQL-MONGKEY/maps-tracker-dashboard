@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Tracking } from "./leaflet-maps";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useMapSelectionStore } from "@/stores/map-selection-state";
 import { useTrackingStore } from "@/stores/trackings";
+import { Tracking } from "@/types";
 
 
 
