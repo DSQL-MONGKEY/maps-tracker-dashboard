@@ -9,24 +9,10 @@ import Link from 'next/link';
 import DistanceLine from './distance-line';
 import { useTrackingStore } from '@/stores/trackings';
 import { useMapSelectionStore } from '@/stores/map-selection-state';
+import { Tracking } from '@/types';
 
 
-export interface Tracking {
-   id: string;
-   device_id: string;
-   holder_name: string;
-   rssi: string;
-   snr:  string;
-   latitude: number;
-   longitude: number;
-   is_emergency: boolean;
-   created_at: string;
-   updated_at: string;
-   devices: {
-      name: string,
-      type: string,
-   }
-}  
+ 
 
 const defaultPosition: [number, number] = [-6.393875, 106.822557]; // Depok
 
@@ -89,9 +75,6 @@ export default function Map() {
       try {
          const res = await fetch('/api/trackings', {
             method: 'GET',
-            headers: {
-               'Content-Type': 'application/json',
-            },
          });
 
          const resJson = await res.json();
