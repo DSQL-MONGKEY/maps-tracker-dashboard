@@ -39,3 +39,20 @@ export type RouteParams = {
     id: string
   };
 }
+
+export interface Tracking {
+  id: string;
+  device_id: string;
+  holder_name: string;
+  rssi: string;
+  snr:  string;
+  latitude: number;
+  longitude: number;
+  is_emergency: boolean;
+  created_at: string;
+  updated_at: string;
+  devices: {
+      name: string,
+      type: string,
+  }
+} 
