@@ -1,8 +1,8 @@
 import { searchParamsCache } from '@/lib/searchparams';
-import { ProductTable } from './trackings-tables';
+import { TrackingDataTable } from './trackings-tables';
 import { columns } from './trackings-tables/columns';
 import { Tracking } from '@/types';
-import { getTrackings } from '@/features/trackings/api/getTrackings';
+import { getTrackings } from '@/features/trackings/api/get-trackings';
 
 type TrackingListingPage = {};
 
@@ -26,7 +26,7 @@ export default async function TrackingListingPage({}: TrackingListingPage) {
   const trackingData: Tracking[] = data;
 
   return (
-    <ProductTable
+    <TrackingDataTable
       data={trackingData}
       totalItems={totalProducts}
       columns={columns}
