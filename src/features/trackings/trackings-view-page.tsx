@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import TrackingsForm from './trackings-form';
-import { getTrackingById } from './api/getTrackingById';
+import { getTrackingById } from './api/get-tracking-by-id';
 
 type TTrackingViewPage = {
   trackingId: string;
