@@ -56,3 +56,13 @@ export interface Tracking {
       type: string,
   }
 } 
+
+
+export interface Devices {
+  created_at: string;
+  description: string;
+  id: string;
+  name: string;
+  status: string;
+  type: string;
+}
