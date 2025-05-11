@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-
+// This function handler used in server component so therefore use direct query to supabase not using NextRoute API
 export async function getTrackings() {
    try {
    
