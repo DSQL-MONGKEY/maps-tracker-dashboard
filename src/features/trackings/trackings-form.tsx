@@ -18,11 +18,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import { Tracking } from '@/types';
+import { Devices, Tracking } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-
+import { getDevices } from '../devices/api/get-devices';
 
 const formSchema = z.object({
   deviceName: z.string().min(2, {
@@ -43,6 +44,8 @@ export default function TrackingsForm({
   initialData: Tracking | null;
   pageTitle: string;
 }) {
+  const [devices, setDevices] = useState<Devices[]>([]);
+
   const defaultValues = {
     deviceName: initialData?.devices.name || '',
     holderName: initialData?.holder_name || '',
@@ -61,6 +64,28 @@ export default function TrackingsForm({
     // Form submission logic would be implemented here
   }
 
+  const fetchDevices = async() => {
+    try {
+      const res = await getDevices();
+      const { data } = res;
+      
+      if(data) {
+        setDevices(data);
+      }
+      return null;
+    } catch(error) {
+      if(error instanceof Error) {
+        return null;
+      }
+    }
+  }
+
+  useEffect(() => {
+
+    fetchDevices();
+
+  },[]);
+
   return (
     <Card className='mx-auto w-full'>
       <CardHeader>
@@ -77,10 +102,29 @@ export default function TrackingsForm({
                 name='deviceName'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Device Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Enter device name' {...field} />
-                    </FormControl>
+                    <FormLabel>Device</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder='Choose Device'
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent position='popper' className='h-32 '>
+                          {devices.map((device) => (
+                          <SelectItem 
+                            key={device.id}
+                            value={device.name}
+                          >
+                            {device.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
