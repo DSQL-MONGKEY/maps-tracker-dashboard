@@ -8,6 +8,7 @@ export async function POST(req: Request) {
 
       const { 
          device_id,
+         holder_name,
          latitude,
          longitude,
          altitude,
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
       const { data, error } = await supabase
          .from('trackings')
          .insert({ 
-            device_id, latitude, longitude, altitude, rssi, message, snr, is_emergency 
+            device_id, holder_name, latitude, longitude, altitude, rssi, message, snr, is_emergency 
          })
          .select();
 

@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request, { params }: RouteParams, ) {
    try {
-      const { id } = params;
+      const { id } = await params;
 
       const { data, error } =  await supabase
          .from('devices')
@@ -38,7 +38,7 @@ export async function GET(req: Request, { params }: RouteParams, ) {
 export async function PUT(req: Request, { params }: RouteParams) {
    try {
 
-      const { id } = params;
+      const { id } = await params;
       const body = await req.json();
       const { name, description } = body;
 
@@ -83,7 +83,7 @@ export async function PUT(req: Request, { params }: RouteParams) {
 export async function DELETE(req: Request, { params }: RouteParams) {
    try {
 
-      const { id } = params;
+      const { id } = await params;
       const {data, error} = await supabase
          .from('devices')
          .delete()
