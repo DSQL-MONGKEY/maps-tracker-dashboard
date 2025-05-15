@@ -1,20 +1,20 @@
 
 type TTracking = {
    deviceId: string;
+   holderName: string;
    rssi?: string;
    snr?: string;
-   latitude: string;
-   longitude: string;
+   latitude: number;
+   longitude: number;
    emergencyStatus: boolean;
 }
 
-export async function addTracking({deviceId, rssi, snr, latitude, longitude, emergencyStatus}:TTracking) {
+export async function addTracking({deviceId, holderName, latitude, longitude, emergencyStatus}:TTracking) {
    const response = await fetch('/api/trackings', {
       method: 'POST',
       body: JSON.stringify({
          device_id: deviceId,
-         rssi: rssi,
-         snr: snr,
+         holder_name: holderName,
          latitude: latitude,
          longitude: longitude,
          is_emergency: emergencyStatus
