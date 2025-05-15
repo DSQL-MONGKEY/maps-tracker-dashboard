@@ -2,7 +2,6 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { SignIn as ClerkSignInForm } from '@clerk/nextjs';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
-import { IconStar } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Authentication forms built using the components.'
 };
 
-export default function SignInViewPage({ stars }: { stars: number }) {
+export default function SignInViewPage() {
   return (
     <div className='relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0'>
       <Link
@@ -38,14 +37,12 @@ export default function SignInViewPage({ stars }: { stars: number }) {
           >
             <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
           </svg>
-          Logo
+          LoRa Tracking System
         </div>
         <div className='relative z-20 mt-auto'>
           <blockquote className='space-y-2'>
             <p className='text-lg'>
-              &ldquo;This starter template has saved me countless hours of work
-              and helped me deliver projects to my clients faster than ever
-              before.&rdquo;
+              &ldquo;Infokan yang jualan tahu isi, yang isinya kebahagiaan&rdquo;
             </p>
             <footer className='text-sm'>Random Dude</footer>
           </blockquote>
@@ -57,19 +54,13 @@ export default function SignInViewPage({ stars }: { stars: number }) {
           <Link
             className={cn('group inline-flex hover:text-yellow-200')}
             target='_blank'
-            href={'https://github.com/kiranism/next-shadcn-dashboard-starter'}
+            href={'https://github.com/DSQL-MONGKEY/maps-tracker-dashboard'}
           >
             <div className='flex items-center'>
               <GitHubLogoIcon className='size-4' />
-              <span className='ml-1 inline'>Star on GitHub</span>{' '}
+              <span className='ml-1 inline'>Star on GitHub</span>
             </div>
-            <div className='ml-2 flex items-center gap-1 text-sm md:flex'>
-              <IconStar
-                className='size-4 text-gray-500 transition-all duration-300 group-hover:text-yellow-300'
-                fill='currentColor'
-              />
-              <span className='font-display font-medium'>{stars}</span>
-            </div>
+            
           </Link>
           <ClerkSignInForm
             initialValues={{
