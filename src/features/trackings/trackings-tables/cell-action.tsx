@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Tracking } from '@/types';
-import { IconEdit, IconDotsVertical, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconDotsVertical, IconTrash, IconEye } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface CellActionProps {
   data: Tracking;
@@ -22,7 +23,20 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    setOpen(!open);
+    const res = await fetch(`/api/trackings/${data.id}`, {
+      method: 'DELETE',
+    });
+    const { success } = await res.json();
+
+
+    toast(success ? 'Deleted Successfully' : 'Failed Process', {
+      description: success ? 'Record has been deleted' : 'Record not deleted'
+    });
+
+
+  };
 
   return (
     <>
@@ -42,6 +56,11 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
+          <DropdownMenuItem
+            onClick={() => router.push(`/dashboard/trackings/view/${data.id}`)}
+          >
+            <IconEye className='mr-2 h-4 w-4' /> View
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => router.push(`/dashboard/trackings/${data.id}`)}
           >
