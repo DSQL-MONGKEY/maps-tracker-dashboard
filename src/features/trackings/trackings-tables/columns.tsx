@@ -104,6 +104,7 @@ export const columns: ColumnDef<Tracking>[] = [
 
   {
     id: 'actions',
+    header: 'More',
     cell: ({ row }) => <CellAction data={row.original} />
   }
 ];
