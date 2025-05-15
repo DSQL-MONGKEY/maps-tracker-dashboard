@@ -24,9 +24,12 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { getDevices } from '../devices/api/get-devices';
+import { addTracking } from './api/add-tracking';
+import { toast } from 'sonner';
+import { formatDate } from '@/lib/format';
 
 const formSchema = z.object({
-  deviceName: z.string().min(2, {
+  deviceId: z.string().min(2, {
     message: 'Device name must be at least 2 characters.'
   }),
   holderName: z.string().min(2, {
@@ -47,7 +50,7 @@ export default function TrackingsForm({
   const [devices, setDevices] = useState<Devices[]>([]);
 
   const defaultValues = {
-    deviceName: initialData?.devices.name || '',
+    deviceId: initialData?.devices.name || '',
     holderName: initialData?.holder_name || '',
     latitude: initialData?.latitude || 0,
     longitude: initialData?.longitude || 0,
@@ -60,8 +63,31 @@ export default function TrackingsForm({
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Form submission logic would be implemented here
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await addTracking({...values});
+    
+      const { data } = await response;
+
+    toast('Record has been created', {
+      description: formatDate(data[0].created_at,  {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+      }),
+    });
+    } catch(error) {
+      if(error instanceof Error) {
+        toast('Error failed to add record', {
+        description: error.message,
+        action: {
+          label: "Close",
+          onClick: () => null 
+        },
+      });
+      }
+    }
   }
 
   const fetchDevices = async() => {
@@ -96,10 +122,10 @@ export default function TrackingsForm({
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div className='grid grid-cols-2 gap-6 md:grid-cols-2'>
               <FormField
                 control={form.control}
-                name='deviceName'
+                name='deviceId'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Device</FormLabel>
@@ -118,7 +144,7 @@ export default function TrackingsForm({
                           {devices.map((device) => (
                           <SelectItem 
                             key={device.id}
-                            value={device.name}
+                            value={device.id}
                           >
                             {device.name}
                           </SelectItem>
@@ -186,7 +212,7 @@ export default function TrackingsForm({
                   <FormItem>
                     <FormLabel>Emergency Status</FormLabel>
                       <Select
-                        onValueChange={(value) => field.onChange(value)}
+                        onValueChange={(value) => field.onChange(Boolean(value))}
                         value={field.value.toString()}
                       >
                         <FormControl>
