@@ -13,6 +13,7 @@ import { IconEdit, IconDotsVertical, IconTrash, IconEye } from '@tabler/icons-re
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useSWRConfig } from 'swr';
 
 interface CellActionProps {
   data: Tracking;
@@ -22,6 +23,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [loading] = useState(false);
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { mutate } = useSWRConfig();
+
 
   const onConfirm = async () => {
     setOpen(!open);
@@ -30,11 +33,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     });
     const { success } = await res.json();
 
+    if(success) {
+      mutate('/api/trackings');
+    }
 
     toast(success ? 'Deleted Successfully' : 'Failed Process', {
       description: success ? 'Record has been deleted' : 'Record not deleted'
     });
-
 
   };
 
