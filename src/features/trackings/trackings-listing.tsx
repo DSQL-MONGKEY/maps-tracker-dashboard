@@ -1,8 +1,5 @@
 import { searchParamsCache } from '@/lib/searchparams';
-import { TrackingDataTable } from './trackings-tables';
-import { columns } from './trackings-tables/columns';
-import { Tracking } from '@/types';
-import { getTrackings } from '@/features/trackings/api/get-trackings';
+import TrackingsListingTable from './trackings-listing-table';
 
 type TrackingListingPage = {};
 
@@ -20,16 +17,7 @@ export default async function TrackingListingPage({}: TrackingListingPage) {
     ...(categories && { categories: categories })
   };
 
-  const response = await getTrackings();
-  const { data } = await response?.json();
-  const totalProducts = data.length;
-  const trackingData: Tracking[] = data;
-
   return (
-    <TrackingDataTable
-      data={trackingData}
-      totalItems={totalProducts}
-      columns={columns}
-    />
+    <TrackingsListingTable filter={filters} />
   );
 }
