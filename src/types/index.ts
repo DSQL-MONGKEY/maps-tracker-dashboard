@@ -63,6 +63,6 @@ export interface Devices {
   description: string;
   id: string;
   name: string;
-  status: string;
+  status: boolean;
   type: string;
 }
