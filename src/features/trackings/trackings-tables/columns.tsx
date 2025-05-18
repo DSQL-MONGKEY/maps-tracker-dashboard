@@ -93,11 +93,9 @@ export const columns: ColumnDef<Tracking>[] = [
         minute: 'numeric',
         second: 'numeric',
         hour12: false,
-      })
+      });
       return (
-        <span>
-          {formattedDate}
-        </span>
+        <span>{formattedDate}</span>
       )
     }
   },
