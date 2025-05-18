@@ -27,6 +27,7 @@ import { getDevices } from '../devices/api/get-devices';
 import { addTracking } from './api/add-tracking';
 import { toast } from 'sonner';
 import { formatDate } from '@/lib/format';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   deviceId: z.string().min(2, {
@@ -35,8 +36,19 @@ const formSchema = z.object({
   holderName: z.string().min(2, {
     message: 'Holder name must be at least 2 characters'
   }),
-  latitude: z.number(),
-  longitude: z.number(),
+  latitude: z.coerce.number()
+  .min(-90, {
+    message: 'Latitude must be ≥ -90'
+  }).max(90, {
+    message: 'Latitude must be ≤ 90'
+  }),
+  longitude: z.coerce.number()
+  .min(-180, {
+    message: 'Longitude must be ≥ -180'
+  })
+  .max(180, {
+    message: 'Longitude must be ≤ 180'
+  }),
   emergencyStatus: z.boolean(),
 });
 
@@ -48,6 +60,7 @@ export default function TrackingsForm({
   pageTitle: string;
 }) {
   const [devices, setDevices] = useState<Devices[]>([]);
+  const router = useRouter();
 
   const defaultValues = {
     deviceId: initialData?.devices.name || '',
@@ -77,6 +90,9 @@ export default function TrackingsForm({
         hour12: false,
       }),
     });
+
+    router.push('/dashboard/trackings');
+
     } catch(error) {
       if(error instanceof Error) {
         toast('Error failed to add record', {
@@ -164,7 +180,6 @@ export default function TrackingsForm({
                     <FormControl>
                       <Input placeholder='Enter holder name' {...field} />
                     </FormControl>
-                    <FormMessage />
                     <FormMessage />
                   </FormItem>
                 )}
