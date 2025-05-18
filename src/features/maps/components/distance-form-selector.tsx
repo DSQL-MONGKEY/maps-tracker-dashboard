@@ -3,7 +3,6 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -11,8 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useMapSelectionStore } from "@/stores/map-selection-state";
 import { useTrackingStore } from "@/stores/trackings";
-import { Tracking } from "@/types";
-
 
 
 const formSchema = z.object({
@@ -22,6 +19,7 @@ const formSchema = z.object({
 });
 
 export default function DistanceFormSelector() {
+   const { filteredTrackings } = useTrackingStore();
    const { 
       latestMode, 
       setLatestMode,
@@ -29,8 +27,8 @@ export default function DistanceFormSelector() {
       setToId,
       clearSelection,
    } = useMapSelectionStore();
+   
 
-   const { filteredTrackings, setFilteredTrackings } = useTrackingStore();
    
    const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -50,30 +48,6 @@ export default function DistanceFormSelector() {
    function handleSwitchChange() {
       setLatestMode(!latestMode);
    }
-
-   useEffect(() => {
-      const cached = localStorage.getItem('cached-trackings');
-      if(cached) {
-         try {
-            const parsed: Tracking[] = JSON.parse(cached);
-
-            const filteredLatestPerDevice = Object.values(
-               parsed.reduce((acc, cur) => {
-                  const existing = acc[cur.device_id];
-                  if (!existing || new Date(cur.created_at) > new Date(existing.created_at)) {
-                     acc[cur.device_id] = cur;
-                  }
-                  return acc;
-               }, {} as Record<string, Tracking>)
-            )
-            setFilteredTrackings(filteredLatestPerDevice);
-
-         } catch {
-            localStorage.removeItem('cached-trackings');
-         }
-      }
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
 
    return (
       <Card className="mx-auto w-full">
