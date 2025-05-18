@@ -4,6 +4,7 @@ import type { ColumnSort, Row, RowData } from '@tanstack/react-table';
 
 declare module '@tanstack/react-table' {
   // biome-ignore lint/correctness/noUnusedVariables: Interface type parameters required by @tanstack/react-table
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
     label?: string;
     placeholder?: string;
@@ -17,7 +18,7 @@ declare module '@tanstack/react-table' {
 
 export interface Option {
   label: string;
-  value: string;
+  value: string | boolean;
   count?: number;
   icon?: React.FC<React.SVGProps<SVGSVGElement>>;
 }
