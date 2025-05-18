@@ -33,7 +33,9 @@ import {
   IconScanPosition,
   IconBrandAppleArcade,
   IconBuildingBroadcastTower,
-  IconMap2
+  IconMap2,
+  IconInfoSquareRounded,
+  IconHierarchy3,
 } from '@tabler/icons-react';
 
 export type Icon = React.ComponentType<IconProps>;
@@ -41,7 +43,9 @@ export type Icon = React.ComponentType<IconProps>;
 export const Icons = {
   devices: IconBrandAppleArcade,
   maps: IconMap2,
-  baseStation: IconBuildingBroadcastTower,
+  faq: IconInfoSquareRounded,
+  infra: IconHierarchy3,
+  lora: IconBuildingBroadcastTower,
   dashboard: IconLayoutDashboard,
   logo: IconCommand,
   login: IconLogin,
