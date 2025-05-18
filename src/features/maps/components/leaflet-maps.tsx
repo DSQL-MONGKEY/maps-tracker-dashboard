@@ -10,6 +10,8 @@ import DistanceLine from './distance-line';
 import { useTrackingStore } from '@/stores/trackings';
 import { useMapSelectionStore } from '@/stores/map-selection-state';
 import { Tracking } from '@/types';
+import useSWR, { mutate } from 'swr';
+import { fetcher } from '@/lib/fetcher';
 
 
  
@@ -58,37 +60,22 @@ const MapEvents = ({ onMapClick }) => {
 
 //@ts-ignore
 export default function Map() {
-   const [trackings, setTrackings] = useState<Tracking[]>([]);
    const [markerPosition, setMarkerPosition] = useState(null);
    const [selectedLocation, setSelectedLocation] = useState<[number, number]>([0, 0]);
+   // const [filteredTrackings, setFilteredTrackings] = useState<Tracking[]>([])
+   const { filteredTrackings, setFilteredTrackings } = useTrackingStore();
+   const { data:response } = useSWR('/api/trackings', fetcher);
 
    const { latestMode, fromId, toId } = useMapSelectionStore();
-   const { filteredTrackings } = useTrackingStore();
    
+   
+   
+
    const handleMapClick = (latlng: any) => {
       const { lat, lng } = latlng;
       setMarkerPosition(latlng);
       setSelectedLocation([lat, lng]);
    };
-
-   const fetchTrackings = async () => {
-      try {
-         const res = await fetch('/api/trackings', {
-            method: 'GET',
-         });
-
-         const resJson = await res.json();
-         
-         if(resJson.success && resJson.data) {
-            setTrackings(resJson.data);
-            localStorage.setItem('cached-trackings', JSON.stringify(resJson.data));
-         }
-      } catch (error) {
-         if(error instanceof Error) {
-            return null;
-         }
-      }
-   }
 
 
    function MapSetup() {
@@ -137,19 +124,6 @@ export default function Map() {
    }
 
    useEffect(() => {
-      const cached = localStorage.getItem('cached-trackings');
-      if(cached) {
-         try {
-            const parsed: Tracking[] = JSON.parse(cached);
-            setTrackings(parsed); 
-         } catch{
-            localStorage.removeItem('cached-trackings');
-         }
-      } else {
-         fetchTrackings();
-      }
-
-      
 
       const channel = supabase
          .channel('trackings')
@@ -160,15 +134,31 @@ export default function Map() {
                table: 'trackings'
             },
             () => {
-               fetchTrackings();
+               mutate('/api/trackings');
             }
          )
          .subscribe()
 
-         return () => {
-            supabase.removeChannel(channel);
-         }
-   }, [])
+         if(response?.data) {
+            const { data } = response;
+            const filteredLatestData = Object.values(
+            data.reduce((accumulator: { [x: string]: any; }, current: { device_id: string | number; created_at: string | number | Date; }) => {
+               const existing = accumulator[current.device_id];
+         
+               if(!existing || new Date(current.created_at) > new Date(existing.created_at)) {
+                  accumulator[current.device_id] = current;
+               }
+               return accumulator;
+      
+            }, {} as Record<string, Tracking>)
+         );
+         setFilteredTrackings(filteredLatestData) 
+      }
+
+      return () => {
+         supabase.removeChannel(channel);
+      }
+   }, [response, setFilteredTrackings])
 
    return (
       <MapContainer
@@ -183,16 +173,13 @@ export default function Map() {
          <MapSetup />
          <MapEvents onMapClick={handleMapClick} />
 
-         {(!latestMode ? filteredTrackings : trackings)
-         .filter(track =>
-               typeof track.latitude === 'number' &&
-               typeof track.longitude === 'number')
+         {(!latestMode ? filteredTrackings : response?.data as Tracking[])
             .map((track) => (
-                     <Marker 
-                     key={track.id} 
-                     position={[track.latitude, track.longitude]}
-                     icon={track.devices.type === 'base-station' ? baseMarkerIcon : deviceMarkerIcon}
-                  >
+                     <Marker
+                        key={track.id} 
+                        position={[track.latitude, track.longitude]}
+                        icon={track.devices.type === 'base-station' ? baseMarkerIcon : deviceMarkerIcon}
+                     >
                      <Popup>
                         <div className="flex flex-col gap-1">
                            <h3 className="text-lg font-semibold">
