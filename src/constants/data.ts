@@ -30,18 +30,10 @@ export const navItems: NavItem[] = [
     items: [] // No child items
   },
   {
-    title: 'End Device',
-    url: '/dashboard/end-device',
+    title: 'Devices',
+    url: '/dashboard/devices',
     icon: 'devices',
-    shortcut: ['e', 'e'],
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Base Station',
-    url: '/dashboard/base-station',
-    icon: 'baseStation',
-    shortcut: ['bs', 'bs'],
+    shortcut: ['de', 'de'],
     isActive: false,
     items: [] // No child items
   },
@@ -81,7 +73,40 @@ export const navItems: NavItem[] = [
     shortcut: ['k', 'k'],
     isActive: false,
     items: [] // No child items
-  }
+  },
+  {
+    title: 'FAQ',
+    url: '#', // Placeholder as there is no direct link for the parent
+    icon: 'faq',
+    isActive: true,
+
+    items: [
+      {
+        title: 'What is LoRa System?',
+        url: '/dashboard/faq/lora',
+        icon: 'lora',
+        shortcut: ['wl', 'wl']
+      },
+      {
+        title: 'How it works?',
+        shortcut: ['ha', 'ha'],
+        url: '/dashboard/faq/works',
+        icon: 'infra' 
+      },
+      {
+        title: 'What is this app for?',
+        shortcut: ['ap', 'ap'],
+        url: '/dashboard/faq/app',
+        icon: 'infra' 
+      },
+      {
+        title: 'How to use this app?',
+        shortcut: ['us', 'us'],
+        url: '/dashboard/faq/use',
+        icon: 'infra' 
+      },
+    ]
+  },
 ];
 
 export interface SaleUser {
