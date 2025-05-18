@@ -20,14 +20,14 @@ import {
 } from '@/components/ui/select';
 import { Devices, Tracking } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { getDevices } from '../devices/api/get-devices';
 import { addTracking } from './api/add-tracking';
 import { toast } from 'sonner';
 import { formatDate } from '@/lib/format';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/fetcher';
 
 const formSchema = z.object({
   deviceId: z.string().min(2, {
@@ -59,7 +59,6 @@ export default function TrackingsForm({
   initialData: Tracking | null;
   pageTitle: string;
 }) {
-  const [devices, setDevices] = useState<Devices[]>([]);
   const router = useRouter();
 
   const defaultValues = {
@@ -74,6 +73,27 @@ export default function TrackingsForm({
     resolver: zodResolver(formSchema),
     values: defaultValues
   });
+
+
+  const { data:response, error, isLoading } = useSWR('/api/devices', fetcher);
+
+  if(isLoading) {
+    toast('Loading...', {
+      description: 'Loading devices data'
+    })
+    return (
+      <span>Loading Data</span>
+    );
+  }
+
+  if(error) {
+    toast('Failed...', {
+      description: 'Error occured while fetching data'
+    });
+  }
+
+  const { data } = response ?? [];
+
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -106,27 +126,6 @@ export default function TrackingsForm({
     }
   }
 
-  const fetchDevices = async() => {
-    try {
-      const res = await getDevices();
-      const { data } = res;
-      
-      if(data) {
-        setDevices(data);
-      }
-      return null;
-    } catch(error) {
-      if(error instanceof Error) {
-        return null;
-      }
-    }
-  }
-
-  useEffect(() => {
-
-    fetchDevices();
-
-  },[]);
 
   return (
     <Card className='mx-auto w-full'>
@@ -157,7 +156,7 @@ export default function TrackingsForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent position='popper' className='h-32 '>
-                          {devices.map((device) => (
+                          {data.map((device: Devices) => (
                           <SelectItem 
                             key={device.id}
                             value={device.id}
