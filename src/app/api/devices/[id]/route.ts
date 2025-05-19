@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase/server";
-import { RouteParams } from "@/types";
 import { NextResponse } from "next/server";
 
 
@@ -37,7 +36,9 @@ export async function GET(req: Request,  { params }: {
    }
 }
 
-export async function PUT(req: Request, { params }: RouteParams) {
+export async function PUT(req: Request, { params }: {
+   params: { id: string }
+}) {
    try {
 
       const { id } = await params;
@@ -82,7 +83,9 @@ export async function PUT(req: Request, { params }: RouteParams) {
    }
 }
 
-export async function DELETE(req: Request, { params }: RouteParams) {
+export async function DELETE(req: Request, { params }: {
+   params: { id: string }
+}) {
    try {
 
       const { id } = await params;

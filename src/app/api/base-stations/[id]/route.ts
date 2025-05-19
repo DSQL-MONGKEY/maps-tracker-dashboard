@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase/server";
-import { RouteParams } from "@/types";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request, { params }: {
@@ -39,7 +38,9 @@ export async function GET(request: Request, { params }: {
    }
 }
 
-export async function PUT(req: Request, { params }:RouteParams) {
+export async function PUT(req: Request, { params }: {
+   params: { id: string }
+}) {
    try {
       const { id } = await params;
       const body = await req.json();
@@ -93,7 +94,9 @@ export async function PUT(req: Request, { params }:RouteParams) {
    }
 }
 
-export async function DELETE(req: Request, { params }:RouteParams) {
+export async function DELETE(req: Request, { params }: {
+   params: { id: string }
+}) {
    try {
       const { id } = await params;
 
