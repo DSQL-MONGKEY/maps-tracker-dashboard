@@ -152,7 +152,7 @@ export default function Map() {
       
             }, {} as Record<string, Tracking>)
          );
-         setFilteredTrackings(filteredLatestData) 
+         setFilteredTrackings(filteredLatestData);
       }
 
       return () => {
