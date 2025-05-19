@@ -44,8 +44,10 @@ export default async function MapsPage(props: pageProps) {
         </div>
         <Separator />
           <Suspense>
-            <div className='w-full h-[500px] flex-1 z-0'>
-              <ClientMapWrapper />
+            <div className='w-full p-2 flex justify-center overflow-hidden'>
+              <div className='w-full h-full z-0'>
+                <ClientMapWrapper />
+              </div>
             </div>
             <DistanceFormSelector />
           </Suspense>
