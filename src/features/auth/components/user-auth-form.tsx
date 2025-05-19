@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +38,6 @@ export default function UserAuthForm() {
 
   const onSubmit = async (data: UserFormValue) => {
     startTransition(() => {
-      console.log('continue with email clicked');
       toast.success('Signed In Successfully!');
     });
   };
