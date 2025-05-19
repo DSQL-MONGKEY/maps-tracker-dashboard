@@ -88,7 +88,6 @@ export default function TrackingsFormMaps(props: any) {
       
          return null;
       }
-      console.log(selectedLocation);
 
    return (
       <MapContainer
