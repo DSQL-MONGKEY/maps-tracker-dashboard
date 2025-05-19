@@ -6,6 +6,7 @@ import { Icons } from '@/components/icons';
 
 export default function GithubSignInButton() {
   const searchParams = useSearchParams();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const callbackUrl = searchParams.get('callbackUrl');
 
   return (
@@ -13,7 +14,7 @@ export default function GithubSignInButton() {
       className='w-full'
       variant='outline'
       type='button'
-      onClick={() => console.log('continue with github clicked')}
+      onClick={() => {}}
     >
       <Icons.github className='mr-2 h-4 w-4' />
       Continue with Github
