@@ -2,7 +2,9 @@ import { supabase } from "@/lib/supabase/server";
 import { RouteParams } from "@/types";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request, { params }:RouteParams) {
+export async function GET(request: Request, { params }: {
+   params: { id: string }
+}) {
    try {
       const { id } = params;
          
