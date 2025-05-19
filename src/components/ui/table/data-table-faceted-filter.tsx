@@ -119,7 +119,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     .map((option) => (
                       <Badge
                         variant='secondary'
-                        key={option.value}
+                        key={String(option.value)}
                         className='rounded-sm px-1 font-normal'
                       >
                         {option.label}
@@ -142,7 +142,7 @@ export function DataTableFacetedFilter<TData, TValue>({
 
                 return (
                   <CommandItem
-                    key={option.value}
+                    key={String(option.value)}
                     onSelect={() => onItemSelect(option, isSelected)}
                   >
                     <div
