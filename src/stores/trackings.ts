@@ -1,4 +1,4 @@
-import { Tracking } from '@/features/maps/components/leaflet-maps';
+import { Tracking } from '@/types';
 import { create } from 'zustand';
 
 
