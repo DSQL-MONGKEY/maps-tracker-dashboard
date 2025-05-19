@@ -10,6 +10,7 @@ export default async function DevicesListingPage({}: DevicesListingPage) {
   const pageLimit = searchParamsCache.get('perPage');
   const categories = searchParamsCache.get('category');
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const filters = {
     page,
     limit: pageLimit,
