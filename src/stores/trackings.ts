@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 type TrackingStore = {
    filteredTrackings: Tracking[];
-   setFilteredTrackings: (trackings: Tracking[]) => void;
+   setFilteredTrackings: (trackings: any) => void;
 }
 
 export const useTrackingStore = create<TrackingStore>((set) => ({
