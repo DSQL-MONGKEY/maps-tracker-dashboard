@@ -2,8 +2,7 @@ import { supabase } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 
-export async function GET(req: Request, params: { id: string }
-) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
    try {
 
       const { id } = await params;
@@ -91,9 +90,7 @@ export async function PUT(req: Request,{ params }: { params: Promise<{ id: strin
    }
 }
 
-export async function DELETE(req: Request, { params }: {
-   params: { id: string }
-}) {
+export async function DELETE(req: Request,{ params }: { params: Promise<{ id: string }> }) {
    try {
 
       const { id } = await params;
