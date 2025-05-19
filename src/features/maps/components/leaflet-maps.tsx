@@ -165,6 +165,7 @@ export default function Map() {
          center={defaultPosition}
          style={{ height: '500px', width: '100%' }}
          zoom={13}
+         className='rounded-lg'
          >
          <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
