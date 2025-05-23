@@ -43,7 +43,6 @@ export type RouteParams = {
 export interface Tracking {
   id: string;
   device_id: string;
-  holder_name: string;
   rssi: string;
   snr:  string;
   latitude: number;
@@ -54,6 +53,9 @@ export interface Tracking {
   devices: {
       name: string,
       type: string,
+  }
+  climber_users: {
+    name: string
   }
 } 
 
