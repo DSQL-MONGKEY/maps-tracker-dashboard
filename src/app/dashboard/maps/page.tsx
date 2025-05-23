@@ -45,7 +45,7 @@ export default async function MapsPage(props: pageProps) {
         <Separator />
           <Suspense>
             <div className='w-full p-2 flex justify-center overflow-hidden'>
-              <div className='w-full h-full z-0'>
+              <div className='w-full   h-full z-0'>
                 <ClientMapWrapper />
               </div>
             </div>
