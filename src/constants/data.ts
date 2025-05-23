@@ -22,18 +22,34 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Trackings',
-    url: '/dashboard/trackings',
-    icon: 'tracker',
-    shortcut: ['t', 't'],
+    title: 'Climber Users',
+    url: '/dashboard/climber-users',
+    icon: 'climber',
     isActive: false,
-    items: [] // No child items
+    shortcut: ['cli', 'cli'],
+    items: [] // Empty array as there are no child items for Dashboard
   },
   {
     title: 'Devices',
     url: '/dashboard/devices',
     icon: 'devices',
     shortcut: ['de', 'de'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Register Device',
+    url: '/dashboard/register-device',
+    icon: 'register',
+    shortcut: ['reg', 'reg'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Trackings',
+    url: '/dashboard/trackings',
+    icon: 'tracker',
+    shortcut: ['t', 't'],
     isActive: false,
     items: [] // No child items
   },
