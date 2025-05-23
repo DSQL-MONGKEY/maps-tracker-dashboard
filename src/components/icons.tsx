@@ -36,12 +36,16 @@ import {
   IconMap2,
   IconInfoSquareRounded,
   IconHierarchy3,
+  IconEscalatorUp,
+  IconRegistered,
 } from '@tabler/icons-react';
 
 export type Icon = React.ComponentType<IconProps>;
 
 export const Icons = {
   devices: IconBrandAppleArcade,
+  register: IconRegistered,
+  climber: IconEscalatorUp,
   maps: IconMap2,
   faq: IconInfoSquareRounded,
   infra: IconHierarchy3,
