@@ -15,9 +15,12 @@ export const columns: ColumnDef<Tracking>[] = [
     header: ({ column }: { column: Column<Tracking, unknown> }) => (
       <DataTableColumnHeader column={column} title='Device Name' />
     ),
-    cell: ({ cell }) => (
+    cell: ({ row }) => (
       //@ts-ignore
-      <div className="capitalize">{cell.getValue<Tracking['devices.name']>()}</div>
+      <div className="capitalize">
+        {/* {cell.getValue<Tracking['devices.name']>()} */}
+        {row.original.devices?.name}
+      </div>
     ),
     meta: {
       label: 'Device Name',
@@ -28,21 +31,17 @@ export const columns: ColumnDef<Tracking>[] = [
     enableColumnFilter: true
   },
   {
-    id: 'holder-name',
-    accessorKey: 'holder_name',
+    id: 'climber-name',
+    accessorKey: 'climber_users.name',
     header: ({ column }: { column: Column<Tracking, unknown> }) => (
-      <DataTableColumnHeader column={column} title='Holder Name' />
+      <DataTableColumnHeader column={column} title='Climber Name' />
     ),
-    cell: ({ cell }) => (
+    cell: ({ row }) => (
       <div className='capitalize'>
-        {cell.getValue<Tracking['holder_name']>()}
+        {row.original.climber_users?.name}
       </div>
     ),
     enableColumnFilter: true,
-    meta: {
-      label: 'categories',
-      variant: 'text',
-    },
   },
   {
     id: 'emergency-status',
