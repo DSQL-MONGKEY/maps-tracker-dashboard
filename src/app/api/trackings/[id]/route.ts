@@ -9,7 +9,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
       const { data, error } = await supabase
          .from('trackings')
-         .select(`*, devices(name, type)`)
+         .select(`*, devices(name, type), climber_users(name)`)
          .eq('id', id)
          .single();
 
