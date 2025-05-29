@@ -187,7 +187,7 @@ export default function Map() {
                               {track.devices.name}
                            </h3>
                            <span>
-                              Device Holder: {track.climber_users.name}
+                              Device Holder: {track.climber_users?.name}
                            </span>
                            <span className="flex gap-1">
                               Coordinate:
