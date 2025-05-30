@@ -44,21 +44,20 @@ export async function PUT(req: Request,{ params }: { params: Promise<{ id: strin
       const { id } = await params;
       const body = await req.json();
       const {
-         device_id,
+         deviceId,
+         climberUserId,
          latitude,
          longitude,
          altitude,
          rssi,
-         message,
          snr,
-         speed,
          is_emergency
       } = body;
 
       const { data, error } = await supabase
          .from('trackings')
          .update({ 
-            device_id, latitude, longitude, altitude, rssi, message, snr, speed, is_emergency 
+            deviceId, climberUserId, latitude, longitude, altitude, rssi, snr, is_emergency 
          })
          .eq('id', id)
          .select()
