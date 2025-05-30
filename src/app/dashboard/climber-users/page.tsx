@@ -3,7 +3,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
-import DevicesListingPage from '@/features/devices/components/devices-listing';
+import ClimberListingPage from '@/features/climber-users/components/climber-listing';
 import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { IconPlus } from '@tabler/icons-react';
@@ -12,7 +12,7 @@ import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 
 export const metadata = {
-  title: 'Dashboard: Devices'
+  title: 'Dashboard: Climber Users'
 };
 
 type pageProps = {
@@ -32,11 +32,11 @@ export default async function Page(props: pageProps) {
       <div className='flex flex-1 flex-col space-y-4'>
         <div className='flex items-start justify-between'>
           <Heading
-            title='Devices'
-            description='Manage listed devices with interactive and details information'
+            title='Climber Users'
+            description='Manage climber users before start the trackings with interactive and details information'
           />
           <Link
-            href='/dashboard/devices/new'
+            href='/dashboard/climber-users/new'
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
             <IconPlus className='mr-2 h-4 w-4' /> Add New
@@ -49,7 +49,7 @@ export default async function Page(props: pageProps) {
             <DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />
           }
         >
-          <DevicesListingPage />
+          <ClimberListingPage />
         </Suspense>
       </div>
     </PageContainer>
