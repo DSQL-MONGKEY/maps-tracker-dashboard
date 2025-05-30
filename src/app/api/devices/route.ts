@@ -5,7 +5,7 @@ export async function POST(req: Request) {
    try {
 
       const payload = await req.json();
-      const { name, description, status, type } = payload;
+      const { deviceCode, name, description, status, type } = payload;
 
 
       // Validasi
@@ -18,12 +18,19 @@ export async function POST(req: Request) {
 
       const { data, error } = await supabase
          .from('devices')
-         .insert([{ name, description, status, type }])
+         .insert([{
+            device_code: deviceCode,
+            name, 
+            description, 
+            status, 
+            type 
+         }])
          .select()
 
       if (error) {
          return NextResponse.json({
-            error: 'Failed to insert data into database'
+            error: 'Failed to insert data into database',
+            details: error.message
          }, { status: 500 }
          );
       }
