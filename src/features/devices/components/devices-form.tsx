@@ -23,8 +23,18 @@ import { Devices } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { addDevice } from '../api/add-devices';
+import { toast } from 'sonner';
+import { mutate } from 'swr';
+import { useRouter } from 'next/navigation';
+import { formatDate } from '@/lib/format';
 
 const formSchema = z.object({
+  deviceCode: z.string().min(4,{
+    message: 'Device code must be at least 4 characters.'
+  }).max(8, {
+    message: 'Device code must not exceed 8 characters.'
+  }),
   name: z.string().min(2, {
     message: 'Product name must be at least 2 characters.'
   }),
@@ -42,7 +52,10 @@ export default function DeviceForm({
   initialData: Devices | null;
   pageTitle: string;
 }) {
+  const router = useRouter();
+
   const defaultValues = {
+    deviceCode: initialData?.device_code || '',
     name: initialData?.name || '',
     status: initialData?.status || true,
     type: initialData?.type || '',
@@ -55,8 +68,35 @@ export default function DeviceForm({
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Form submission logic would be implemented here
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await addDevice({...values});
+      const { data } = await response;
+
+      toast('Record has been added successfully', {
+        duration: 5000,
+        description: formatDate(data[0].created_at,  {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false,
+        }),
+      });
+      mutate('/api/devices');
+    
+      router.push('/dashboard/devices');
+    } catch(error) {
+      if(error instanceof Error) {
+        toast('Error failed to add record', {
+          duration: 3000,
+          description: error.message,
+          action: {
+            label: "Close",
+            onClick: () => null 
+          },
+        });
+      }
+    }
   }
 
   return (
@@ -72,12 +112,25 @@ export default function DeviceForm({
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <FormField
                 control={form.control}
+                name='deviceCode'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Device Code</FormLabel>
+                    <FormControl>
+                      <Input placeholder='Enter device code' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name='name'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Device Name</FormLabel>
                     <FormControl>
-                      <Input placeholder='Enter product name' {...field} />
+                      <Input placeholder='Enter device name' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -88,7 +141,7 @@ export default function DeviceForm({
                 name='status'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Device Status</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(Boolean(value))}
                       value={field.value.toString()}
@@ -117,13 +170,27 @@ export default function DeviceForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Type</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='string'
-                        placeholder='Enter type'
-                        {...field}
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={(value) => field.onChange(value)}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Select device type' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={'base-station'}>
+                          Base Station
+                        </SelectItem>
+                        <SelectItem value={'client-device'}>
+                          Client Device
+                        </SelectItem>
+                        <SelectItem value={'extender-device'}>
+                          Extender Device
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -137,7 +204,7 @@ export default function DeviceForm({
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder='Enter product description'
+                      placeholder='Enter the device description'
                       className='resize-none'
                       {...field}
                     />
@@ -146,7 +213,7 @@ export default function DeviceForm({
                 </FormItem>
               )}
             />
-            <Button type='submit'>Add Device</Button>
+            <Button type='submit'>Submit</Button>
           </form>
         </Form>
       </CardContent>
