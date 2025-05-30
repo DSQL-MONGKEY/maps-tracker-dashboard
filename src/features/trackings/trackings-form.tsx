@@ -63,7 +63,7 @@ export default function TrackingsForm({
 
   const defaultValues = {
     deviceId: initialData?.devices.name || '',
-    holderName: initialData?.holder_name || '',
+    holderName: initialData?.climber_users.name || '',
     latitude: initialData?.latitude || 0,
     longitude: initialData?.longitude || 0,
     emergencyStatus: initialData?.is_emergency || false
