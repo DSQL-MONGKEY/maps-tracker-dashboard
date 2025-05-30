@@ -6,7 +6,7 @@ type TDeviceViewPageProps = {
   deviceId: string;
 };
 
-export default async function DeviceViewPag({
+export default async function DeviceViewPage({
   deviceId
 }: TDeviceViewPageProps) {
   let device = null;
