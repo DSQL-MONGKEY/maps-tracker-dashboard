@@ -31,7 +31,7 @@ export function Breadcrumbs() {
               </BreadcrumbSeparator>
             )}
             {index === items.length - 1 && (
-              <BreadcrumbPage>{item.title}</BreadcrumbPage>
+              <BreadcrumbPage>{item.title.slice(0, 8)}</BreadcrumbPage>
             )}
           </Fragment>
         ))}
