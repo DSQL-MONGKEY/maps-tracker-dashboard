@@ -22,7 +22,9 @@ export default function Header() {
         <div className='hidden md:flex'>
           <SearchInput />
         </div>
-        <UserNav />
+        <div className='hidden md:flex'>
+          <UserNav />
+        </div>
         <ModeToggle />
         <ThemeSelector />
       </div>
