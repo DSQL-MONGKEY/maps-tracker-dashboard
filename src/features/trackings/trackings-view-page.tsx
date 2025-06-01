@@ -13,7 +13,7 @@ export default async function TrackingViewPage({
   let pageTitle = 'Create New Tracking Record';
 
   if (trackingId !== 'new') {
-    const response = await getTrackingById(String(trackingId));
+    const response = await getTrackingById(trackingId);
     
     const { data } = response ? await response.json() : { data: null };
 
