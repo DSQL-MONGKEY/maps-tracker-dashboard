@@ -39,17 +39,20 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
       const { id } = await params;
       const body = await req.json();
-      const { name, description } = body;
-
-      if(!name || !description) {
-         return NextResponse.json({
-            error: 'Name and description are required'
-         }, { status: 400 });
-      }
-
+      const { 
+         device_code: deviceCode, 
+         name, 
+         status,
+         type,
+         description } = body;
       const { data, error } = await supabase
          .from('devices')
-         .update({ name, description })
+         .update({ 
+            device_code: deviceCode,
+            status,
+            type,
+            name, 
+            description })
          .eq('id', id)
          .select()
          .single();
@@ -65,7 +68,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       return NextResponse.json({
          success: true,
          data
-      }, { status: 200 });
+      }, { status: 201 });
 
    } catch(error) {
 
