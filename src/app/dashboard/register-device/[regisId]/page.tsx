@@ -7,7 +7,7 @@ export const metadata = {
   title: 'Dashboard : Device View'
 };
 
-type PageProps = { params: Promise<{ trackingId: string }> };
+type PageProps = { params: Promise<{ regisId: string }> };
 
 export default async function Page(props: PageProps) {
   const params = await props.params;
@@ -15,7 +15,7 @@ export default async function Page(props: PageProps) {
     <PageContainer scrollable>
       <div className='flex-1 space-y-4'>
         <Suspense fallback={<FormCardSkeleton />}>
-          <TrackingViewPage trackingId={params.trackingId} />
+          <TrackingViewPage trackingId={params.regisId} />
         </Suspense>
       </div>
     </PageContainer>
