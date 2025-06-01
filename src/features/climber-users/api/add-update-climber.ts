@@ -7,9 +7,9 @@ type TClimber = {
    address: string;
 }
 
-export const addClimber = async ({ name, phone, email, address }:TClimber ) => {
-   const response = await fetch('/api/climber-users', {
-      method: 'POST',
+export const Climber = async ({ name, phone, email, address }:TClimber, id:string, method:string,  ) => {
+   const response = await fetch(`/api/climber-users/${id}`, {
+      method: method,
       headers: {
          'Content-Type': 'application/json',
       },
