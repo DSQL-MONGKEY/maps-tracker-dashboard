@@ -7,7 +7,6 @@ export async function POST(req: Request) {
       const payload = await req.json();
       const { deviceCode, name, description, status, type } = payload;
 
-
       // Validasi
       if (!name || !type) {
          return NextResponse.json(
