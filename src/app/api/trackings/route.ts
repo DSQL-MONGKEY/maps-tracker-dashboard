@@ -100,7 +100,7 @@ export async function GET() {
       const { data, error }= await supabase
          .from('trackings')
          .select(`*, devices(name, type), climber_users(name)`)
-         .order('created_at', { ascending: false });
+         .order('created_at', { ascending: true });
 
       if(error) {
          return NextResponse.json({
