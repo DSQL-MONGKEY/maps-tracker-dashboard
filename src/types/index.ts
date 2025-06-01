@@ -61,6 +61,7 @@ export interface Tracking {
 
 export interface Devices {
   created_at: string;
+  updated_at: string;
   device_code: string;
   description: string;
   id: string;
