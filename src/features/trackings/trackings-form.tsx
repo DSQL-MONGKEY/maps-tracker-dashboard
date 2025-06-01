@@ -62,8 +62,8 @@ export default function TrackingsForm({
   const router = useRouter();
 
   const defaultValues = {
-    deviceId: initialData?.devices.name || '',
-    holderName: initialData?.climber_users.name || '',
+    deviceId: initialData?.devices.name || 'Choose Device',
+    holderName: initialData?.climber_users?.name || '',
     latitude: initialData?.latitude || 0,
     longitude: initialData?.longitude || 0,
     emergencyStatus: initialData?.is_emergency || false
@@ -80,15 +80,12 @@ export default function TrackingsForm({
   if(isLoading) {
     toast('Loading...', {
       description: 'Loading devices data'
-    })
-    return (
-      <span>Loading Data</span>
-    );
+    });
   }
 
   if(error) {
     toast('Failed...', {
-      description: 'Error occured while fetching data'
+      description: 'Error occured while fetching device data'
     });
   }
 
@@ -102,7 +99,7 @@ export default function TrackingsForm({
     
       const { data } = await response;
 
-    toast('Record has been created', {
+    toast('Request sent successfully', {
       description: formatDate(data[0].created_at,  {
         hour: 'numeric',
         minute: 'numeric',
@@ -156,7 +153,7 @@ export default function TrackingsForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent position='popper' className='h-32 '>
-                          {data.map((device: Devices) => (
+                          {data?.map((device: Devices) => (
                           <SelectItem 
                             key={device.id}
                             value={device.id}
