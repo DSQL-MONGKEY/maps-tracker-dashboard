@@ -12,6 +12,8 @@ import { Devices } from '@/types';
 import { IconEdit, IconDotsVertical, IconTrash, IconEye } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { mutate } from 'swr';
 
 interface CellActionProps {
   data: Devices;
@@ -22,7 +24,21 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    setOpen(!open);
+    const res = await fetch(`/api/devices/${data.id}`, {
+      method: 'DELETE',
+    });
+    const { success } = await res.json();
+
+    if(success) {
+      mutate('/api/devices');
+    }
+
+    toast(success ? 'Deleted Successfully' : 'Failed Process', {
+      description: success ? 'Record has been deleted' : 'Record not deleted'
+    });
+  };
 
   return (
     <>
