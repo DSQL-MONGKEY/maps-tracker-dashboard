@@ -23,7 +23,7 @@ import { Devices } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { addDevice } from '../api/add-devices';
+import { Device } from '../api/add-update-device';
 import { toast } from 'sonner';
 import { mutate } from 'swr';
 import { useRouter } from 'next/navigation';
@@ -47,10 +47,12 @@ const formSchema = z.object({
 
 export default function DeviceForm({
   initialData,
-  pageTitle
+  pageTitle,
+  method,
 }: {
   initialData: Devices | null;
   pageTitle: string;
+  method?: string | null
 }) {
   const router = useRouter();
 
@@ -67,27 +69,44 @@ export default function DeviceForm({
     values: defaultValues
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await addDevice({...values});
+      const response = await Device(
+        {...values}, 
+        initialData?.id ?? '', 
+        method ?? 'POST'
+      );
+
       const { data } = await response;
 
-      toast('Record has been added successfully', {
-        duration: 5000,
-        description: formatDate(data[0].created_at,  {
+      const formattedDate = method == 'PUT' ? (
+        formatDate(data.updated_at,  {
           hour: 'numeric',
           minute: 'numeric',
           second: 'numeric',
           hour12: false,
-        }),
+        })
+      ) : (
+        formatDate(data[0].created_at,  {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false,
+        })
+      );
+
+
+      toast('Request successfully', {
+        duration: 5000,
+        description: formattedDate,
       });
+
       mutate('/api/devices');
-    
       router.push('/dashboard/devices');
+
     } catch(error) {
       if(error instanceof Error) {
-        toast('Error failed to add record', {
+        toast('Error request failed ', {
           duration: 3000,
           description: error.message,
           action: {
