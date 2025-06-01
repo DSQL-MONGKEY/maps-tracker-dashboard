@@ -7,7 +7,7 @@ export async function getTrackingById(id: String) {
    
          const { data, error } = await supabase
             .from('trackings')
-            .select(`*, devices(name, type)`)
+            .select(`*, devices(name, type), climber_users(name)`)
             .eq('id', id)
             .single();
    
