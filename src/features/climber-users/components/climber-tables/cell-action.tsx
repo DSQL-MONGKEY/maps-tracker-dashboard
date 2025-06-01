@@ -12,6 +12,9 @@ import { ClimberUser } from '@/types';
 import { IconEdit, IconDotsVertical, IconTrash, IconEye } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { deleteClimber } from '../../api/delete-climber';
+import { mutate } from 'swr';
+import { toast } from 'sonner';
 
 interface CellActionProps {
   data: ClimberUser;
@@ -22,7 +25,19 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => {
+    setOpen(!open);
+    const response = await deleteClimber(data.id);
+    const { success } = response;
+
+    if(success) {
+      mutate('/api/climber-users');
+    }
+
+    toast(success ? 'Deleted Successfully' : 'Failed Process', {
+      description: success ? 'Record deleted successfully' : 'Record failed got something wrong to delete the record'
+    });
+};
 
   return (
     <>
