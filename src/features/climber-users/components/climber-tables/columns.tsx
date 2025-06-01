@@ -10,7 +10,7 @@ export const columns: ColumnDef<ClimberUser>[] = [
     id: 'name',
     accessorKey: 'name',
     header: ({ column }: { column: Column<ClimberUser, unknown> }) => (
-      <DataTableColumnHeader column={column} title='Device Name' />
+      <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ cell }) => <div>{cell.getValue<ClimberUser['name']>()}</div>,
     meta: {
