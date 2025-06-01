@@ -10,6 +10,7 @@ export default async function ClimberViewPage({
   climbId
 }: TDeviceViewPageProps) {
   let climberUserData = null;
+  let method = null;
   let pageTitle = 'Add New Device';
 
   if (climbId !== 'new') {
@@ -22,11 +23,12 @@ export default async function ClimberViewPage({
     pageTitle = 'Update';
 
     climberUserData = data;
+    method = 'PUT';
 
     if(!data) {
       notFound();
     }
   }
 
-  return <ClimberForm initialData={climberUserData} pageTitle={pageTitle} />;
+  return <ClimberForm initialData={climberUserData} pageTitle={pageTitle} method={method} />;
 }
