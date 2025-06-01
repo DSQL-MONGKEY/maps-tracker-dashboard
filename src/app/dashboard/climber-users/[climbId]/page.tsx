@@ -1,7 +1,7 @@
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
 import { Suspense } from 'react';
-import ClimberViewPage from '@/features/climber-users/components/climber-view-page';
+import  ClimberViewPage from '@/features/climber-users/components/climber-view-page';
 
 export const metadata = {
   title: 'Dashboard : Climber User View'
