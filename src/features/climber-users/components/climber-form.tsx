@@ -15,7 +15,7 @@ import { ClimberUser } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import { addClimber } from '../api/add-climber';
+import { Climber } from '../api/add-update-climber';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { formatDate } from '@/lib/format';
@@ -38,10 +38,12 @@ const formSchema = z.object({
 
 export default function ClimberForm({
   initialData,
-  pageTitle
+  pageTitle,
+  method
 }: {
   initialData: ClimberUser | null;
   pageTitle: string;
+  method?: string | null;
 }) {
     const router = useRouter();
 
@@ -60,22 +62,38 @@ export default function ClimberForm({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await addClimber({...values});
+      const response = await Climber(
+        {...values}, 
+        initialData?.id ?? '', 
+        method ?? 'POST'
+      );
 
       const { data } = await response;
 
-      toast('Record has been added successfully', {
-        duration: 5000,
-        description: formatDate(data[0].created_at,  {
+      const formattedDate = method == 'PUT' ? (
+        formatDate(data.updated_at,  {
           hour: 'numeric',
           minute: 'numeric',
           second: 'numeric',
           hour12: false,
-        }),
-      });
-      mutate('/api/climber-users');
+        })
+      ) : (
+        formatDate(data[0].created_at,  {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false,
+        })
+      );
 
+      toast('Request successfully', {
+        duration: 5000,
+        description: formattedDate,
+      });
+
+      mutate('/api/climber-users');
       router.push('/dashboard/climber-users');
+
     } catch(error) {
       if(error instanceof Error) {
         toast('Error failed to add record', {
