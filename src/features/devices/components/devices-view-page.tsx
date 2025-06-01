@@ -10,6 +10,7 @@ export default async function DeviceViewPage({
   deviceId
 }: TDeviceViewPageProps) {
   let device = null;
+  let method = null;
   let pageTitle = 'Add New Device';
 
   if (deviceId !== 'new') {
@@ -24,7 +25,9 @@ export default async function DeviceViewPage({
     if(!data) {
       notFound();
     }
+
+    method = 'PUT';
   }
 
-  return <DeviceForm initialData={device} pageTitle={pageTitle} />;
+  return <DeviceForm initialData={device} pageTitle={pageTitle} method={method} />;
 }
