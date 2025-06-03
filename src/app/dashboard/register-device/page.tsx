@@ -3,7 +3,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
-import DevicesListingPage from '@/features/devices/components/devices-listing';
+import RegisterListingPage from '@/features/register-devices/components/register-listing';
 import { searchParamsCache } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
 import { IconPlus } from '@tabler/icons-react';
@@ -12,7 +12,7 @@ import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 
 export const metadata = {
-  title: 'Dashboard: Devices'
+  title: 'Dashboard: Register Devices'
 };
 
 type pageProps = {
@@ -36,7 +36,7 @@ export default async function Page(props: pageProps) {
             description='Register device with registered climber user for tracking data system'
           />
           <Link
-            href='/dashboard/register-devices/new'
+            href='/dashboard/register-device/new'
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
             <IconPlus className='mr-2 h-4 w-4' /> Add New
@@ -49,7 +49,7 @@ export default async function Page(props: pageProps) {
             <DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />
           }
         >
-          <DevicesListingPage />
+          <RegisterListingPage />
         </Suspense>
       </div>
     </PageContainer>
