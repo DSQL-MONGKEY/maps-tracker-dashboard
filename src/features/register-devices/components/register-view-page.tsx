@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import RegisterForm from './register-form';
-import { getRegistereById } from '../api/get-register-by-id';
+import { getRegisterById } from '../api/get-register-by-id';
 
 type TRegisterViewPageProps = {
   regisId: string;
@@ -14,7 +14,7 @@ export default async function RegisterViewPage({
   let pageTitle = 'Register New Device';
 
   if (regisId !== 'new') {
-    const response = await getRegistereById(regisId);
+    const response = await getRegisterById(regisId);
 
     const { data } =  response ? await response.json() : {
       data: null
