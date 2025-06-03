@@ -77,7 +77,17 @@ export default function DeviceForm({
         method ?? 'POST'
       );
 
-      const { data } = await response;
+      const result = await response;
+
+      if(!result.success) {
+        toast('Request Failed', {
+          duration: 4000,
+          description: result.error || 'Terjadi kesalahan validasi',
+        });
+        return;
+      }
+
+      const data = result.data;
 
       const formattedDate = method == 'PUT' ? (
         formatDate(data.updated_at,  {
@@ -87,7 +97,7 @@ export default function DeviceForm({
           hour12: false,
         })
       ) : (
-        formatDate(data[0].created_at,  {
+        formatDate(data[0]?.created_at,  {
           hour: 'numeric',
           minute: 'numeric',
           second: 'numeric',
@@ -162,8 +172,8 @@ export default function DeviceForm({
                   <FormItem>
                     <FormLabel>Device Status</FormLabel>
                     <Select
-                      onValueChange={(value) => field.onChange(Boolean(value))}
-                      value={field.value.toString()}
+                      onValueChange={(value) => field.onChange(value === 'true')}
+                      value={String(field.value)}
                     >
                       <FormControl>
                         <SelectTrigger>
