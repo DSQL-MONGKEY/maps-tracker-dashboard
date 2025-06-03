@@ -62,7 +62,7 @@ export const columns: ColumnDef<Tracking>[] = [
     },
     enableColumnFilter: true,
     meta: {
-      label: 'categories',
+      label: 'Emergency Status',
       variant: 'multiSelect',
       options: STATUS_OPTIONS
     }
