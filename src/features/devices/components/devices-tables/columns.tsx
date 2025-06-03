@@ -44,7 +44,7 @@ export const columns: ColumnDef<Devices>[] = [
       const Icon = status ? CheckCircle2 : XCircle;
 
       return (
-        <Badge variant='outline' className='capitalize'>
+        <Badge variant={status ? 'secondary' : 'destructive'} className='capitalize'>
           <Icon />
           {status ? 'Active' : 'Inactive'}
         </Badge>
