@@ -65,13 +65,7 @@ export default function RegisterForm({
     values: defaultValues
   });
 
-  const { data:climberResponse, error:climberError, isLoading:climberLoading } = useSWR('/api/climber-users', fetcher);
-
-  if(climberLoading) {
-    toast('Loading...', {
-        description: 'Load climber data'
-      });
-  }
+  const { data:climberResponse, error:climberError } = useSWR('/api/climber-users', fetcher);
 
   if(climberError) {
     toast('Failed...', {
@@ -82,13 +76,7 @@ export default function RegisterForm({
   const { data:climberData } = climberResponse ?? [];
 
 
-  const { data:deviceResponse, error:deviceError, isLoading:deviceLoading } = useSWR('/api/devices', fetcher);
-  
-    if(deviceLoading) {
-      toast('Loading...', {
-        description: 'Load device data'
-      });
-    }
+  const { data:deviceResponse, error:deviceError } = useSWR('/api/devices', fetcher);
   
     if(deviceError) {
       toast('Failed...', {
