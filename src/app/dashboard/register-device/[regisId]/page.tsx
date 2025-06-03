@@ -1,7 +1,7 @@
 import FormCardSkeleton from '@/components/form-card-skeleton';
 import PageContainer from '@/components/layout/page-container';
 import { Suspense } from 'react';
-import TrackingViewPage from '@/features/trackings/trackings-view-page';
+import RegisterViewPage from '@/features/register-devices/components/register-view-page';
 
 export const metadata = {
   title: 'Dashboard : Device View'
@@ -15,7 +15,7 @@ export default async function Page(props: PageProps) {
     <PageContainer scrollable>
       <div className='flex-1 space-y-4'>
         <Suspense fallback={<FormCardSkeleton />}>
-          <TrackingViewPage trackingId={params.regisId} />
+          <RegisterViewPage regisId={params.regisId} />
         </Suspense>
       </div>
     </PageContainer>
