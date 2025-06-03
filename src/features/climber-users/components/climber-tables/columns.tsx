@@ -39,9 +39,25 @@ export const columns: ColumnDef<ClimberUser>[] = [
   },
   {
     accessorKey: 'created_at',
-    header: 'Created At',
+    header: 'Data Created',
     cell: ({ cell }) => {
       const formattedDate = formatDate(cell.getValue<ClimberUser['created_at']>(), {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
+      });
+
+      return (
+        <span>{formattedDate}</span>
+      )
+    }
+  },
+  {
+    accessorKey: 'updated_at',
+    header: 'Last Updated',
+    cell: ({ cell }) => {
+      const formattedDate = formatDate(cell.getValue<ClimberUser['updated_at']>(), {
         hour: 'numeric',
         minute: 'numeric',
         second: 'numeric',
