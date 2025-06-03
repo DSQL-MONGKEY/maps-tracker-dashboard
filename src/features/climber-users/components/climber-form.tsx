@@ -31,8 +31,8 @@ const formSchema = z.object({
   email: z.string().min(5, {
     message: 'Email must be at least 5 characters.'
   }),
-  address: z.string().min(5, {
-    message: 'Address must be at least 5 characters.'
+  address: z.string().min(2, {
+    message: 'Address must be at least 2 characters.'
   })
 });
 
@@ -68,7 +68,17 @@ export default function ClimberForm({
         method ?? 'POST'
       );
 
-      const { data } = await response;
+      const result = await response;
+
+      if(!result.success) {
+        toast('Request Failed', {
+          duration: 4000,
+          description: result.error || 'Terjadi kesalahan validasi',
+        });
+        return;
+      }
+
+      const  data  = await response.data;
 
       const formattedDate = method == 'PUT' ? (
         formatDate(data.updated_at,  {
@@ -78,7 +88,7 @@ export default function ClimberForm({
           hour12: false,
         })
       ) : (
-        formatDate(data[0].created_at,  {
+        formatDate(data[0]?.created_at,  {
           hour: 'numeric',
           minute: 'numeric',
           second: 'numeric',
