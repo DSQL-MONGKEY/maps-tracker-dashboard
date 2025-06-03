@@ -100,32 +100,38 @@ export default function RegisterForm({
 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     try {
       const response = await RegisterDevice(
-        {...values}, 
-        initialData?.id ?? '', 
+        { ...values },
+        initialData?.id ?? '',
         method ?? 'POST'
       );
 
-      const { data } = await response;
+      const result = await response;
 
-      const formattedDate = method == 'PUT' ? (
-        formatDate(data.updated_at,  {
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: false,
-        })
-      ) : (
-        formatDate(data[0].created_at,  {
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: false,
-        })
-      );
+      if (!result.success) {
+        toast('Request Failed', {
+          duration: 4000,
+          description: result.error || 'Terjadi kesalahan validasi',
+        });
+        return;
+      }
 
+      const data = result.data;
+
+      const formattedDate = method === 'PUT'
+        ? formatDate(data.updated_at, {
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false,
+          })
+        : formatDate(data[0]?.created_at, {
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: false,
+          });
 
       toast('Request successfully', {
         duration: 5000,
@@ -135,19 +141,22 @@ export default function RegisterForm({
       mutate('/api/register-device');
       router.push('/dashboard/register-device');
 
-    } catch(error) {
-      if(error instanceof Error) {
-        toast('Error request failed ', {
+    } catch (error) {
+      if (error instanceof Error) {
+        toast('Error request failed', {
           duration: 3000,
           description: error.message,
           action: {
-            label: "Close",
-            onClick: () => null 
+            label: 'Close',
+            onClick: () => null,
           },
         });
+      } else {
+        toast('Unknown error', { duration: 3000 });
       }
     }
   }
+
 
   return (
     <Card className='mx-auto w-full'>
@@ -220,34 +229,6 @@ export default function RegisterForm({
                           ))}
                         </SelectContent>
                       </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='isActive'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Device Status</FormLabel>
-                    <Select
-                      onValueChange={(value) => field.onChange(Boolean(value))}
-                      value={field.value.toString()}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Select device status' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={'true'}>
-                          Active
-                        </SelectItem>
-                        <SelectItem value={'false'}>
-                          Inactive
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
