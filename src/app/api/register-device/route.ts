@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       }
       const deviceDbId = device.id;
 
-      const { data:activeRegister, error:activerRegisterError } = await supabase
+      const { data:activeRegister } = await supabase
          .from('register_devices')
          .select('id')
          .eq('device_id', deviceDbId)
@@ -52,14 +52,7 @@ export async function POST(req: Request) {
          .limit(1)
          .single();
       
-      if(activerRegisterError) {
-         return NextResponse.json({
-            success: false,
-            error: 'Error checking active register',
-            details: activerRegisterError.message
-         }, { status: Number(activerRegisterError.code) || 500 });
-      }
-
+      
       if(activeRegister) {
          return NextResponse.json({
             success: false,
