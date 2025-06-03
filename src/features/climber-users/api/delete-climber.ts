@@ -1,7 +1,7 @@
 
 
 export const deleteClimber = async(id: string) => {
-   const response = await fetch(`/api/cimber-users/${id}`, {
+   const response = await fetch(`/api/climber-users/${id}`, {
       method: 'DELETE',
    });
    
