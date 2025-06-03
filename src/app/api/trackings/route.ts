@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       if(registerErorr || !register) {
          return NextResponse.json({
             success: false,
-            error: 'Error register device not found',
+            error: 'Error registered device not found',
             details: registerErorr ? registerErorr.message : null 
          }, { status: 404 });
       }
