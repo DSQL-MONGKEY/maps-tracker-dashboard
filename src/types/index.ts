@@ -71,12 +71,20 @@ export interface Devices {
 }
 
 export interface RegisterDevices {
-  id: number;
+  id: string;
   climber_user_id: string;
   device_id: string;
-  registered_at: string;
+  registered_at: string | null;
   unregistered_at: string | null;
+  updated_at: string;
   is_active: boolean;
+  devices: {
+    name: string;
+    type: string;
+  },
+  climber_users: {
+    name: string;
+  }
 }
 
 export interface ClimberUser {
