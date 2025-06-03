@@ -57,7 +57,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             address
          })
          .eq('id', id)
-         .select()
+         .select('*')
          .single();
 
       if(error) {
