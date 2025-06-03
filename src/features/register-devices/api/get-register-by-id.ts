@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-export async function getRegistereById(id: string) {
+export async function getRegisterById(id: string) {
    try {
    
          const { data, error } = await supabase
