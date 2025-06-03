@@ -75,13 +75,7 @@ export default function TrackingsForm({
   });
 
 
-  const { data:response, error, isLoading } = useSWR('/api/devices', fetcher);
-
-  if(isLoading) {
-    toast('Loading...', {
-      description: 'Loading devices data'
-    });
-  }
+  const { data:response, error } = useSWR('/api/devices', fetcher);
 
   if(error) {
     toast('Failed...', {
@@ -96,8 +90,18 @@ export default function TrackingsForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await addTracking({...values});
-    
-      const { data } = await response;
+      
+      const result = await response;
+      
+      if(!result.success) {
+        toast('Request Failed', {
+          duration: 4000,
+          description: result.error || 'An error occurred while adding tracking record',
+        });
+        return;
+      }
+
+      const data = await response.data;
 
     toast('Request sent successfully', {
       description: formatDate(data[0].created_at,  {
