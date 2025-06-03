@@ -55,7 +55,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             description })
          .eq('id', id)
          .select()
-         .single();
+         .limit(1)
+         .maybeSingle();
 
 
       if(error) {
