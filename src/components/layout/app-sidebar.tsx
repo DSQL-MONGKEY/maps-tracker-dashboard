@@ -55,7 +55,7 @@ export const company = {
 
 const tenants = [
   { id: '1', name: 'LoRa System' },
-  { id: '2', name: 'Shazam' },
+  { id: '2', name: 'Dimp.io' },
   { id: '3', name: 'Maps Tracker' },
 ];
 
