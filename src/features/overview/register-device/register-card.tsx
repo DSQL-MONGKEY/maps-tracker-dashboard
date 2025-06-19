@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { IconDatabase, IconDeviceAirtag } from "@tabler/icons-react";
+import { IconDatabase, IconTrekking } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
@@ -35,7 +35,7 @@ export function RegisterCard() {
          <CardFooter className='flex-col items-start gap-1.5 text-sm'>
             <div className='line-clamp-1 flex gap-2 font-medium'>
                Recently devices in used
-               <IconDeviceAirtag className='size-4' />
+               <IconTrekking className='size-4' />
             </div>
             <div className='text-muted-foreground'>
                Total of active climbers using tracker device 
