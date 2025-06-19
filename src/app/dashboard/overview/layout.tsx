@@ -14,10 +14,8 @@ interface IOverview {
 }
 
 export default function OverViewLayout({
-  sales,
   pie_stats,
   bar_stats,
-  area_stats,
   devices,
   climbers,
   register_device,
@@ -42,10 +40,8 @@ export default function OverViewLayout({
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7'>
           <div className='col-span-4'>{bar_stats}</div>
           <div className='col-span-4 md:col-span-3'>
-            {/* sales parallel routes */}
-            {sales}
           </div>
-          <div className='col-span-4'>{area_stats}</div>
+          <div className='col-span-4'></div>
           <div className='col-span-4 md:col-span-3'>{pie_stats}</div>
         </div>
       </div>
