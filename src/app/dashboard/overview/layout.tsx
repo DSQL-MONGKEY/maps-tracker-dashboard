@@ -14,8 +14,6 @@ interface IOverview {
 }
 
 export default function OverViewLayout({
-  pie_stats,
-  bar_stats,
   devices,
   climbers,
   register_device,
