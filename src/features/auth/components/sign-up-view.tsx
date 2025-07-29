@@ -63,7 +63,7 @@ export default function SignUpViewPage() {
           </Link>
           <ClerkSignUpForm
             initialValues={{
-              emailAddress: 'your_mail+clerk_test@example.com'
+              emailAddress: ''
             }}
           />
           <p className='text-muted-foreground px-8 text-center text-sm'>
