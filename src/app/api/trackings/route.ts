@@ -66,7 +66,7 @@ export async function POST(req: Request) {
             snr, 
             is_emergency 
          })
-         .select();
+         .select('*');
 
       if(trackingsError) {
          return NextResponse.json({
@@ -100,7 +100,7 @@ export async function GET() {
       const { data, error }= await supabase
          .from('trackings')
          .select(`*, devices(name, type), climber_users(name)`)
-         .order('created_at', { ascending: true });
+         .order('created_at', { ascending: false });
 
       if(error) {
          return NextResponse.json({
