@@ -64,7 +64,7 @@ export default function SignInViewPage() {
           </Link>
           <ClerkSignInForm
             initialValues={{
-              emailAddress: 'your_mail+clerk_test@example.com'
+              emailAddress: ''
             }}
           />
 
