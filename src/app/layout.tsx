@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 import './globals.css';
 import './theme.css';
+import InitUserRole from '@/components/layout/init-user-role';
 
 const META_THEME_COLORS = {
   light: '#ffffff',
@@ -69,6 +70,7 @@ export default async function RootLayout({
           >
             <Providers activeThemeValue={activeThemeValue as string}>
               <Toaster />
+              <InitUserRole />
               {children}
             </Providers>
           </ThemeProvider>
