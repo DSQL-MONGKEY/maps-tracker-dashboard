@@ -1,3 +1,4 @@
+import ControlledButton from '@/components/controlled-button';
 import PageContainer from '@/components/layout/page-container';
 import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
@@ -37,12 +38,14 @@ export default async function Page(props: pageProps) {
             title='Tracking Data'
             description='List of all time trackings data history'
           />
-          <Link
-            href='/dashboard/trackings/new'
-            className={cn(buttonVariants(), 'text-xs md:text-sm')}
-          >
-            <IconPlus className='mr-2 h-4 w-4' /> Add New
-          </Link>
+          <ControlledButton>
+            <Link
+              href='/dashboard/trackings/new'
+              className={cn(buttonVariants(), 'text-xs md:text-sm')}
+            >
+              <IconPlus className='mr-2 h-4 w-4' /> Add New
+            </Link>
+          </ControlledButton>
         </div>
         <Separator />
         <Suspense
