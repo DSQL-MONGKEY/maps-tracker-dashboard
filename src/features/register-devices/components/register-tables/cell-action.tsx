@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useRoleStore } from '@/stores/role-store';
 import { RegisterDevices } from '@/types';
 import { IconEdit, IconDotsVertical, IconTrash, IconEye } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -26,13 +27,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onConfirm = async () => {
     setOpen(!open);
-    const res = await fetch(`/api/register/${data.id}`, {
+    const res = await fetch(`/api/register-device/${data.id}`, {
       method: 'DELETE',
     });
     const { success } = await res.json();
 
     if(success) {
-      mutate('/api/register-devices');
+      mutate('/api/register-device');
     }
 
     toast(success ? 'Deleted Successfully' : 'Failed Process', {
@@ -40,6 +41,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     });
   };
 
+  const role = useRoleStore((state) => state.role);
+  
   return (
     <>
       <AlertModal
@@ -63,14 +66,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <IconEye className='mr-2 h-4 w-4' /> View
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/register-device/${data.id}`)}
-          >
-            <IconEdit className='mr-2 h-4 w-4' /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <IconTrash className='mr-2 h-4 w-4' /> Delete
-          </DropdownMenuItem>
+          {role == 'admin' && (
+            <>
+              <DropdownMenuItem
+                onClick={() => router.push(`/dashboard/register-device/${data.id}`)}
+              >
+                <IconEdit className='mr-2 h-4 w-4' /> Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <IconTrash className='mr-2 h-4 w-4' /> Delete
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
