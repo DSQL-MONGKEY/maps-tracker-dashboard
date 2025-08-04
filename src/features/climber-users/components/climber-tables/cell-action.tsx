@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { deleteClimber } from '../../api/delete-climber';
 import { mutate } from 'swr';
 import { toast } from 'sonner';
+import { useRoleStore } from '@/stores/role-store';
 
 interface CellActionProps {
   data: ClimberUser;
@@ -38,6 +39,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       description: success ? 'Record deleted successfully' : 'Record failed got something wrong to delete the record'
     });
 };
+  const role = useRoleStore((state) => state.role);
 
   return (
     <>
@@ -62,14 +64,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <IconEye className='mr-2 h-4 w-4' /> View
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/climber-users/${data.id}`)}
-          >
-            <IconEdit className='mr-2 h-4 w-4' /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <IconTrash className='mr-2 h-4 w-4' /> Delete
-          </DropdownMenuItem>
+          {role == 'admin' && (
+            <>
+              <DropdownMenuItem
+                onClick={() => router.push(`/dashboard/climber-users/${data.id}`)}
+              >
+                <IconEdit className='mr-2 h-4 w-4' /> Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <IconTrash className='mr-2 h-4 w-4' /> Delete
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
