@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useRoleStore } from '@/stores/role-store';
 import { Devices } from '@/types';
 import { IconEdit, IconDotsVertical, IconTrash, IconEye } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -40,6 +41,8 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     });
   };
 
+    const role = useRoleStore((state) => state.role);
+
   return (
     <>
       <AlertModal
@@ -63,14 +66,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           >
             <IconEye className='mr-2 h-4 w-4' /> View
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/devices/${data.id}`)}
-          >
-            <IconEdit className='mr-2 h-4 w-4' /> Update
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <IconTrash className='mr-2 h-4 w-4' /> Delete
-          </DropdownMenuItem>
+          {role == 'admin' && (
+            <>
+              <DropdownMenuItem
+                onClick={() => router.push(`/dashboard/devices/${data.id}`)}
+              >
+                <IconEdit className='mr-2 h-4 w-4' /> Update
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
+                <IconTrash className='mr-2 h-4 w-4' /> Delete
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>
