@@ -11,7 +11,7 @@ export default async function ClimberViewPage({
 }: TDeviceViewPageProps) {
   let climberUserData = null;
   let method = null;
-  let pageTitle = 'Add New Device';
+  let pageTitle = 'Add New Climber Data';
 
   if (climbId !== 'new') {
     const response = await getClimberById(climbId);
