@@ -51,10 +51,10 @@ export const columns: ColumnDef<Tracking>[] = [
     ),
     cell: ({ cell }) => {
       const status = cell.getValue<Tracking['is_emergency']>();
-      const Icon = status ? CheckCircle2 : XCircle;
+      const Icon = status ? XCircle : CheckCircle2;
 
       return (
-        <Badge variant={status ? 'destructive' : 'secondary'} className='capitalize'>
+        <Badge variant={status ? 'secondary' : 'destructive'} className='capitalize'>
           <Icon />
           {status ? 'Normal' : 'Emergency'}
         </Badge>
