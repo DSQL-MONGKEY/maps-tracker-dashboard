@@ -54,9 +54,9 @@ export const columns: ColumnDef<Tracking>[] = [
       const Icon = status ? XCircle : CheckCircle2;
 
       return (
-        <Badge variant={status ? 'secondary' : 'destructive'} className='capitalize'>
+        <Badge variant={status ? 'destructive' : 'secondary'} className='capitalize'>
           <Icon />
-          {status ? 'Normal' : 'Emergency'}
+          {status ? 'Emergency' : 'Normal'}
         </Badge>
       );
     },
