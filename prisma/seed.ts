@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { seedBaseStations } from './seeders/base-station.seeder';
 import { seedClimberUsers } from './seeders/climber-user.seeder';
-import { seedDevices } from './seeders/Device.seeder';
-import { seedUsers } from './seeders/User.seeder';
+import { seedDevices } from './seeders/device.seeder';
+import { seedUsers } from './seeders/user.seeder';
 import { seedRegisterDevices } from './seeders/register-device.seeder';
-import { seedTrackings } from './seeders/Tracking.seeder';
-import { seedLogs } from './seeders/Log.seeder';
+import { seedTrackings } from './seeders/tracking.seeder';
+import { seedLogs } from './seeders/log.seeder';
 
 // Inisialisasi instance Prisma Client tunggal
 const prisma = new PrismaClient();
