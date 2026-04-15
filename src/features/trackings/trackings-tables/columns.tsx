@@ -11,16 +11,13 @@ import { formatDate } from '@/lib/format';
 export const columns: ColumnDef<Tracking>[] = [
   {
     id: 'device-name',
-    accessorKey: 'devices.name',
+    accessorKey: 'device.name',
     header: ({ column }: { column: Column<Tracking, unknown> }) => (
       <DataTableColumnHeader column={column} title='Device Name' />
     ),
     cell: ({ row }) => (
       //@ts-ignore
-      <div className="capitalize">
-        {/* {cell.getValue<Tracking['devices.name']>()} */}
-        {row.original.devices?.name}
-      </div>
+      <div className='capitalize'>{row.original.device?.name}</div>
     ),
     meta: {
       label: 'Device Name',
@@ -32,16 +29,14 @@ export const columns: ColumnDef<Tracking>[] = [
   },
   {
     id: 'climber-name',
-    accessorKey: 'climber_users.name',
+    accessorKey: 'climberUser.name',
     header: ({ column }: { column: Column<Tracking, unknown> }) => (
       <DataTableColumnHeader column={column} title='Climber Name' />
     ),
     cell: ({ row }) => (
-      <div className='capitalize'>
-        {row.original.climber_users?.name}
-      </div>
+      <div className='capitalize'>{row.original.climberUser?.name}</div>
     ),
-    enableColumnFilter: true,
+    enableColumnFilter: true
   },
   {
     id: 'emergency-status',
@@ -50,11 +45,14 @@ export const columns: ColumnDef<Tracking>[] = [
       <DataTableColumnHeader column={column} title='Emergency Status' />
     ),
     cell: ({ cell }) => {
-      const status = cell.getValue<Tracking['is_emergency']>();
+      const status = cell.getValue<Tracking['isEmergency']>();
       const Icon = status ? XCircle : CheckCircle2;
 
       return (
-        <Badge variant={status ? 'destructive' : 'secondary'} className='capitalize'>
+        <Badge
+          variant={status ? 'destructive' : 'secondary'}
+          className='capitalize'
+        >
           <Icon />
           {status ? 'Emergency' : 'Normal'}
         </Badge>
@@ -81,21 +79,22 @@ export const columns: ColumnDef<Tracking>[] = [
   },
   {
     accessorKey: 'snr',
-    header: 'SNR',
+    header: 'SNR'
   },
   {
     accessorKey: 'created_at',
     header: 'Created At',
     cell: ({ cell }) => {
-      const formattedDate = formatDate(cell.getValue<Tracking['created_at']>(), {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false,
-      });
-      return (
-        <span>{formattedDate}</span>
-      )
+      const formattedDate = formatDate(
+        cell.getValue<Tracking['created_at']>(),
+        {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false
+        }
+      );
+      return <span>{formattedDate}</span>;
     }
   },
 

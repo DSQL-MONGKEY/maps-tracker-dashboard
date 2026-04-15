@@ -1,82 +1,76 @@
+import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/server';
+import { Prisma } from '@prisma/client';
 
 export async function POST(req: Request) {
-   try {
+  try {
+    const payload = await req.json();
+    const { deviceCode, name, description, status, type } = payload;
 
-      const payload = await req.json();
-      const { deviceCode, name, description, status, type } = payload;
+    // Validasi
+    if (!name || !type) {
+      return NextResponse.json(
+        { error: 'Name and type are required' },
+        { status: 400 }
+      );
+    }
 
-      // Validasi
-      if (!name || !type) {
-         return NextResponse.json(
-            { error: 'Name and type are required' },
-            { status: 400 }
-         );
+    // Prisma: Menggunakan create() untuk melakukan insert data
+    // Properti deviceCode otomatis dipetakan ke kolom device_code oleh Prisma sesuai skema
+    const data = await prisma.device.create({
+      data: {
+        deviceCode,
+        name,
+        description,
+        status,
+        type
       }
+    });
 
-      const { data, error } = await supabase
-         .from('devices')
-         .insert([{
-            device_code: deviceCode,
-            name, 
-            description, 
-            status, 
-            type 
-         }])
-         .select()
-
-      if (error) {
-         return NextResponse.json({
-            error: 'Failed to insert data into database',
-            details: error.message
-         }, { status: 500 }
-         );
-      }
-
-      return NextResponse.json({ 
-         success: true, 
-         data 
-      }, { status: 201 });
-
-   } catch (error) {
-
-      if (error instanceof Error) {
-         return NextResponse.json({
-            error: 'An error occurred while processing your request',
-            details: error.message
-         }, { status: 500 });
-      }
-
-   }
+    return NextResponse.json(
+      {
+        success: true,
+        data
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: 'An error occurred while processing your request',
+          details: error.message
+        },
+        { status: 500 }
+      );
+    }
+  }
 }
 
 export async function GET() {
-   try {
-
-      const { data, error } = await supabase
-         .from('devices')
-         .select('*')
-         .order('created_at', { ascending: false });
-
-      if(error) {
-         return NextResponse.json({
-            error: 'Failed to fetch devices'
-         }, { status: 500});
+  try {
+    // Prisma: Menggunakan findMany() dengan argumen orderBy
+    const data = await prisma.device.findMany({
+      orderBy: {
+        createdAt: 'desc' // Pastikan menggunakan camelCase 'createdAt' sesuai model Prisma
       }
+    });
 
-      return NextResponse.json({
-         data 
-      }, { status: 200 })
-
-   } catch (error) {
-
-      if(error instanceof Error) {
-         return NextResponse.json({
-            error: 'An error occurred while fetching devices',
-            details: error.message
-         }, { status: 500 });
-      }
-
-   }
+    return NextResponse.json(
+      {
+        data
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: 'An error occurred while fetching devices',
+          details: error.message
+        },
+        { status: 500 }
+      );
+    }
+  }
 }

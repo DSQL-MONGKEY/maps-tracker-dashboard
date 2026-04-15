@@ -1,158 +1,160 @@
-import { supabase } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import prisma from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-   try {
-      const { id } = await params;
-      
-      const { data, error } = await supabase
-         .from('register_devices')
-         .select(`*, devices(name, type), climber_users(name)`)
-         .eq('id', id)
-         .single();
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
 
-      if(error) {
-         return NextResponse.json({
-            success: false,
-            error: 'Register id not found',
-         }, { status: 404 });
+    // Prisma: Menggunakan findUnique dan include untuk memuat relasi (JOIN)
+    const data = await prisma.registerDevice.findUnique({
+      where: { id },
+      include: {
+        device: {
+          select: { name: true, type: true }
+        },
+        climberUser: {
+          select: { name: true }
+        }
       }
+    });
 
-      return NextResponse.json({
-         success: true,
-         data,
-      }, { status: 200 });
+    if (!data) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Register id not found'
+        },
+        { status: 404 }
+      );
+    }
 
-   } catch(error) {
-   
-      if(error instanceof Error) {
-         return NextResponse.json({
-            success: false,
-            error: 'An error occurred while processing your request',
-            details: error.message
-         }, { status: 500 });
-      }
-
-   }
+    return NextResponse.json(
+      {
+        success: true,
+        data
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'An error occurred while processing your request',
+          details: error.message
+        },
+        { status: 500 }
+      );
+    }
+  }
 }
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
-   try {
-      const { id } = await params;
-      const body = await req.json();
-      const {
-         climberUserId,
-         deviceId,
-         registeredAt,
-         unregisteredAt,
-         isActive
-      } = body;
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    const { climberUserId, deviceId, registeredAt, unregisteredAt, isActive } =
+      body;
 
-      const { data:climberUser, error:climberError } = await supabase
-         .from('climber_users')
-         .select('id')
-         .eq('id', climberUserId)
-         .limit(1)
-         .single();
+    // 1. Validasi Keberadaan Climber User
+    const climberUser = await prisma.climberUser.findUnique({
+      where: { id: climberUserId },
+      select: { id: true }
+    });
 
-      if(climberError || !climberUser) {
-         return NextResponse.json({
-            success: false,
-            error: 'Climber user not found',
-            details: climberError.message
-         }, { status: 404 });
+    if (!climberUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Climber user not found'
+        },
+        { status: 404 }
+      );
+    }
+
+    // 2. Validasi Keberadaan Device
+    const device = await prisma.device.findUnique({
+      where: { id: deviceId },
+      select: { id: true }
+    });
+
+    if (!device) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Device not found'
+        },
+        { status: 404 }
+      );
+    }
+
+    // 3. Eksekusi Update
+    const register = await prisma.registerDevice.update({
+      where: { id },
+      data: {
+        climberUserId,
+        deviceId,
+        registeredAt,
+        unregisteredAt,
+        isActive
       }
-      const climberUserDbId = climberUser.id;
+    });
 
-      const { data:device, error:deviceError } = await supabase
-         .from('devices')
-         .select('id')
-         .eq('id', deviceId)
-         .limit(1)
-         .single()
-
-         if(deviceError || !device) {
-            return NextResponse.json({
-               success: false,
-               errror: 'Device not found',
-               details: deviceError.message
-            }, { status: 404 });
-         }
-         const deviceDbId = device.id;
-
-      const { data:register, error:registerError } = await supabase
-         .from('register_devices')
-         .update({
-            climber_user_id: climberUserDbId,
-            device_id: deviceDbId,
-            registered_at: registeredAt,
-            unregistered_at: unregisteredAt,
-            is_active: isActive
-         })
-         .eq('id', id)
-         .select('*')
-         .single();
-
-      if(registerError) {
-         return NextResponse.json({
-            success: false,
-            error: 'An error occurred while processing your request',
-            details: registerError.message
-         }, { status: 500 });
-      }
-
-      return NextResponse.json({
-         success: true,
-         data: register,
-      }, { status: 200 });
-   
-   } catch(error) {
-
-         if(error instanceof Error) {
-            return NextResponse.json({
-               success: false,
-               error: 'An error occurred while processing your request',
-               details: error.message
-            }, { status: 500 });
-         }
-
-   }
+    return NextResponse.json(
+      {
+        success: true,
+        data: register
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'An error occurred while processing your request',
+          details: error.message
+        },
+        { status: 500 }
+      );
+    }
+  }
 }
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-   try {
-      const { id } = await params;
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
 
-      const { data, error } = await supabase
-         .from('register_devices')
-         .delete()
-         .eq('id', id)
-         .select('*')
-         .single();
+    const data = await prisma.registerDevice.delete({
+      where: { id }
+    });
 
-      if(error) {
-         return NextResponse.json({
-            success: false,
-            error: 'An error occurred while processing your request',
-            details: error.message
-         }, { status: 500});
-      }
-
-      return NextResponse.json({
-         success: true,
-         data,
-      }, { status: 200 });
-
-   } catch(error) {
-
-      if(error instanceof Error) {
-         return NextResponse.json({
-            success: false,
-            error: 'An error occurred while processing your request',
-            details: error.message
-         }, { status: 500 });
-      }
-
-   }
+    return NextResponse.json(
+      {
+        success: true,
+        data
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'An error occurred while processing your request',
+          details: error.message
+        },
+        { status: 500 }
+      );
+    }
+  }
 }
-

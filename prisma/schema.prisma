@@ -1,0 +1,125 @@
+generator client {
+   provider = "prisma-client-js"
+}
+
+datasource db {
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
+   directUrl = env("DIRECT_URL")
+}
+
+enum BaseStationStatus {
+   active
+   inactive
+   @@map("status") 
+}
+
+enum DeviceType {
+   base_station
+   client_device
+   extender_device
+   @@map("device_type") 
+}
+
+// --- MODELS ---
+
+model BaseStation {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String?
+  locationName String?            @map("location_name")
+  createdAt    DateTime           @default(dbgenerated("(now() AT TIME ZONE 'asia/jakarta'::text)")) @map("created_at") @db.Timestamptz
+  latitude     Decimal?           @db.Decimal
+  longitude    Decimal?           @db.Decimal
+  description  String?
+  updatedAt    DateTime           @default(dbgenerated("(now() AT TIME ZONE 'asia/jakarta'::text)")) @map("updated_at") @db.Timestamptz
+  status       BaseStationStatus? @default(active)
+
+  @@map("base_stations")
+}
+
+model ClimberUser {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String?
+  phone           String?
+  email           String?
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  address         String?          @default("Bumi")
+  updatedAt       DateTime?        @default(now()) @map("updated_at") @db.Timestamptz
+  
+  // Back-relations untuk relasi Foreign Key
+  registerDevices RegisterDevice[]
+  trackings       Tracking[]
+
+  @@map("climber_users")
+}
+
+model Device {
+   id              String           @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+   name            String           @unique
+   description     String?
+   createdAt       DateTime         @default(dbgenerated("(now() AT TIME ZONE 'asia/jakarta'::text)")) @map("created_at") @db.Timestamptz
+   type            DeviceType?
+   status          Boolean?         @default(true)
+   deviceCode      String?          @unique @map("device_code")
+   updatedAt       DateTime?        @default(now()) @map("updated_at") @db.Timestamptz
+
+   // Back-relations untuk relasi Foreign Key
+   registerDevices RegisterDevice[]
+   trackings       Tracking[]
+
+   @@map("devices")
+}
+
+model Log {
+   id        BigInt   @id @default(autoincrement())
+   source    String?
+   level     String?
+   message   String?
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+   @@map("logs")
+}
+
+model RegisterDevice {
+   id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+   climberUserId  String?      @map("climber_user_id") @db.Uuid
+   deviceId       String?      @map("device_id") @db.Uuid
+   createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+   registeredAt   DateTime?    @default(now()) @map("registered_at") @db.Timestamptz
+   unregisteredAt DateTime?    @map("unregistered_at") @db.Timestamptz
+   isActive       Boolean?     @default(true) @map("is_active")
+   updatedAt      DateTime?    @default(now()) @map("updated_at") @db.Timestamptz
+
+   // Relasi Foreign Key
+   climberUser    ClimberUser? @relation(fields: [climberUserId], references: [id])
+   device         Device?      @relation(fields: [deviceId], references: [id])
+
+   @@map("register_devices")
+}
+
+model Tracking {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  deviceId      String       @map("device_id") @db.Uuid
+  climberUserId String?      @map("climber_user_id") @db.Uuid
+  rssi          Int?
+  snr           Float?       @db.DoublePrecision
+  latitude      Decimal?     @db.Decimal
+  longitude     Decimal?     @db.Decimal
+  isEmergency   Boolean?     @default(false) @map("is_emergency")
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relasi Foreign Key
+  device        Device       @relation(fields: [deviceId], references: [id])
+  climberUser   ClimberUser? @relation(fields: [climberUserId], references: [id])
+
+  @@map("trackings")
+}
+
+model User {
+  id        String    @id @unique
+  email     String
+  role      String    @default("viewer")
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6) // tanpa time zone
+
+  @@map("users")
+}

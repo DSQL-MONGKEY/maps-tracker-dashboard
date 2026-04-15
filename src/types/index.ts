@@ -36,28 +36,28 @@ export type SidebarNavItem = NavItemWithChildren;
 
 export type RouteParams = {
   params: {
-    id: string
+    id: string;
   };
-}
+};
 
 export interface Tracking {
   id: string;
-  device_id: string;
+  deviceId: string;
   rssi: string;
-  snr:  string;
+  snr: string;
   latitude: number;
   longitude: number;
-  is_emergency: boolean;
+  isEmergency: boolean;
   created_at: string;
   updated_at: string;
-  devices: {
-    name: string,
-    type: string,
-  }
-  climber_users: {
-    name: string
-  }
-} 
+  device: {
+    name: string;
+    type: string;
+  };
+  climberUser: {
+    name: string;
+  };
+}
 
 export interface Devices {
   created_at: string;
@@ -81,10 +81,10 @@ export interface RegisterDevices {
   devices: {
     name: string;
     type: string;
-  },
+  };
   climber_users: {
     name: string;
-  }
+  };
 }
 
 export interface ClimberUser {
