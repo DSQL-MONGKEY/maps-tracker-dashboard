@@ -5,15 +5,23 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
+    // Ekstrak semua field sesuai dengan JSON yang dikirim dari Gateway C++
     const {
       device_code,
+      timestamp,
       latitude,
       longitude,
-      altitude, // Pastikan kolom ini sudah ditambahkan di schema.prisma
-      rssi,
-      message, // Pastikan kolom ini sudah ditambahkan di schema.prisma
-      snr,
-      is_emergency
+      temperature,
+      humidity,
+      pressure,
+      heart_rate,
+      spo2,
+      is_emergency,
+      is_fallen,
+      hop_count,
+      routing_path,
+      gateway_rssi,
+      gateway_snr
     } = body;
 
     // 1. Validasi dan Ambil ID Device berdasarkan device_code
@@ -33,21 +41,17 @@ export async function POST(req: Request) {
     }
 
     const deviceDbId = device.id;
-    const now = new Date(); // Prisma menggunakan object Date bawaan JS
+    const now = new Date();
 
     // 2. Cari Climber yang sedang memakai device ini (sesi aktif)
     const register = await prisma.registerDevice.findFirst({
       where: {
         deviceId: deviceDbId,
-        registeredAt: { lte: now }, // less than or equal to 'now'
-        OR: [
-          { unregisteredAt: null },
-          { unregisteredAt: { gte: now } } // greater than or equal to 'now'
-        ]
+        registeredAt: { lte: now },
+        OR: [{ unregisteredAt: null }, { unregisteredAt: { gte: now } }]
       },
       select: {
         climberUserId: true
-        // Kita tidak perlu men-select climberUser(name) di sini jika tidak digunakan di insert
       }
     });
 
@@ -63,18 +67,29 @@ export async function POST(req: Request) {
 
     const climberId = register.climberUserId;
 
-    // 3. Insert Tracking Data
+    // Konversi UNIX epoch (detik) dari GPS ke objek Date JS (milidetik)
+    // Jika GPS belum fix (timestamp 0), fallback ke null agar database rapi
+    const deviceTimeObj = timestamp > 0 ? new Date(timestamp * 1000) : null;
+
+    // 3. Insert Tracking Data ke Database
     const trackingData = await prisma.tracking.create({
       data: {
         deviceId: deviceDbId,
         climberUserId: climberId,
         latitude,
         longitude,
-        altitude, // Hapus baris ini jika kolom tidak ada di database
-        rssi,
-        message, // Hapus baris ini jika kolom tidak ada di database
-        snr,
-        isEmergency: is_emergency
+        deviceTime: deviceTimeObj, // Waktu aktual dari GPS
+        temperature,
+        pressure,
+        humidity,
+        heartRate: heart_rate,
+        spo2,
+        isEmergency: is_emergency || false,
+        isFallen: is_fallen || false,
+        rssi: gateway_rssi,
+        snr: gateway_snr,
+        hopCount: hop_count,
+        routingPath: routing_path || [] // Memasukkan array dari Extender
       }
     });
 

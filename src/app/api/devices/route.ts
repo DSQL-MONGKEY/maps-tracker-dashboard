@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +18,7 @@ export async function POST(req: Request) {
     // Properti deviceCode otomatis dipetakan ke kolom device_code oleh Prisma sesuai skema
     const data = await prisma.device.create({
       data: {
-        deviceCode,
+        device_code: deviceCode,
         name,
         description,
         status,

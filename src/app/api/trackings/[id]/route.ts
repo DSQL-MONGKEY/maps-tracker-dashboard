@@ -58,16 +58,29 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await req.json();
+
+    // Ekstrak semua field yang mungkin diperbarui dari payload dashboard
     const {
       deviceId,
       climberUserId,
+      timestamp,
       latitude,
       longitude,
-      altitude, // Pastikan field ini benar-benar ada di schema.prisma Anda
+      temperature,
+      pressure,
+      humidity,
+      heart_rate,
+      spo2,
+      is_emergency,
+      is_fallen,
       rssi,
       snr,
-      is_emergency
+      hop_count,
+      routing_path
     } = body;
+
+    // Konversi timestamp ke Date object jika disediakan
+    const deviceTimeObj = timestamp ? new Date(timestamp * 1000) : undefined;
 
     const data = await prisma.tracking.update({
       where: { id },
@@ -76,10 +89,19 @@ export async function PUT(
         climberUserId,
         latitude,
         longitude,
-        altitude,
+        deviceTime: deviceTimeObj,
+        temperature,
+        pressure,
+        humidity,
+        // Pengecekan undefined agar Prisma tidak me-reset data yang tidak ingin diubah
+        heartRate: heart_rate !== undefined ? heart_rate : undefined,
+        spo2: spo2 !== undefined ? spo2 : undefined,
+        isEmergency: is_emergency !== undefined ? is_emergency : undefined,
+        isFallen: is_fallen !== undefined ? is_fallen : undefined,
         rssi,
         snr,
-        isEmergency: is_emergency // Mapping dari input snake_case ke Prisma camelCase
+        hopCount: hop_count !== undefined ? hop_count : undefined,
+        routingPath: routing_path !== undefined ? routing_path : undefined
       }
     });
 
