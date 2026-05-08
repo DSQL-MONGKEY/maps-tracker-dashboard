@@ -98,23 +98,43 @@ model RegisterDevice {
 }
 
 model Tracking {
-  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  deviceId      String       @map("device_id") @db.Uuid
-  climberUserId String?      @map("climber_user_id") @db.Uuid
-  rssi          Int?
-  snr           Float?       @db.DoublePrecision
-  latitude      Decimal?     @db.Decimal
-  longitude     Decimal?     @db.Decimal
-  isEmergency   Boolean?     @default(false) @map("is_emergency")
-  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
+   id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+   deviceId      String       @map("device_id") @db.Uuid
+   climberUserId String?      @map("climber_user_id") @db.Uuid
 
-  // Relasi Foreign Key
-  device        Device       @relation(fields: [deviceId], references: [id])
-  climberUser   ClimberUser? @relation(fields: [climberUserId], references: [id])
+   // 1. Lokasi & Waktu Perangkat
+   latitude      Decimal?     @db.Decimal
+   longitude     Decimal?     @db.Decimal
+   deviceTime    DateTime?    @map("device_time") @db.Timestamptz // Hasil konversi uint32_t (GPS Epoch)
 
-  @@map("trackings")
+   // 2. Metrik Lingkungan (BME280)
+   temperature   Float?       // Suhu aktual setelah dibagi 100 di Gateway
+   pressure      Float?       // Tekanan aktual setelah dibagi 10 di Gateway
+   humidity      Int?         // Dari uint8_t (%)
+
+   // 3. Metrik Biomedis (MAX30102)
+   heartRate     Int?         @map("heart_rate") // Dari uint8_t (BPM)
+   spo2          Int?         // Dari uint8_t (%)
+
+   // 4. Status Darurat (Hasil ekstrak bitmask statusFlags)
+   isEmergency   Boolean?     @default(false) @map("is_emergency")
+   isFallen      Boolean?     @default(false) @map("is_fallen")
+
+   // 5. Metrik Jaringan Transmisi (LoRa & Extender)
+   rssi          Int?         // Dihasilkan oleh Gateway
+   snr           Float?       @db.DoublePrecision // Dihasilkan oleh Gateway
+   hopCount      Int?         @map("hop_count") // Dari uint8_t
+   routingPath   Int[]        @map("routing_path") // Array dari path[MAX_HOPS]
+
+   // 6. Metadata Database
+   createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
+
+   // Relasi Foreign Key
+   device        Device       @relation(fields: [deviceId], references: [id])
+   climberUser   ClimberUser? @relation(fields: [climberUserId], references: [id])
+
+   @@map("trackings")
 }
-
 model User {
   id        String    @id @unique
   email     String
