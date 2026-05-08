@@ -1,17 +1,24 @@
-import { supabase } from "@/lib/supabase/server";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-// This function handler used in server component so therefore use direct query to supabase not using NextRoute API
-export async function getTrackingById(id: String) {
+// This function handler used in server component so therefore use direct query to prisma not using NextRoute API
+export async function getTrackingById(id: string) {
    try {
+         const data = await prisma.tracking.findUnique({
+            where: { 
+               id: id 
+            },
+            include: {
+               device: {
+                  select: { name: true, type: true }
+               },
+               climberUser: {
+                  select: { name: true }
+               }
+            }
+         });
    
-         const { data, error } = await supabase
-            .from('trackings')
-            .select(`*, devices(name, type), climber_users(name)`)
-            .eq('id', id)
-            .single();
-   
-         if (error) {
+         if (!data) {
             return NextResponse.json({
                success: false,
                error: 'Tracking not found',
@@ -31,7 +38,6 @@ export async function getTrackingById(id: String) {
                error: 'An error occurred while processing your request',
                details: error.message
             }, { status: 500 });
-   
          }
       }
-} 
+}

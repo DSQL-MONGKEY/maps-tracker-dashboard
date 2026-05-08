@@ -16,13 +16,15 @@ export default async function ClimberViewPage({
   if (climbId !== 'new') {
     const response = await getClimberById(climbId);
 
-    const data = response ?? {
-      data: null
-    };
+    const data = response ?? null;
 
     pageTitle = 'Update';
 
-    climberUserData = data;
+    climberUserData = data ? {
+      ...data,
+      created_at: data.createdAt,
+      updated_at: data.updatedAt,
+    } : null;
     method = 'PUT';
 
     if (!data) {

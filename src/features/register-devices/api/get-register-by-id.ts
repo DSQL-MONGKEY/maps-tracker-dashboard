@@ -1,26 +1,33 @@
-import { supabase } from "@/lib/supabase/server";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function getRegisterById(id: string) {
    try {
+         const data = await prisma.registerDevice.findUnique({
+            where: { 
+               id: id 
+            },
+            include: {
+               device: {
+                  select: { name: true, type: true }
+               },
+               climberUser: {
+                  select: { name: true }
+               }
+            }
+         });
    
-         const { data, error } = await supabase
-            .from('register_devices')
-            .select(`*, devices(name, type), climber_users(name)`)
-            .eq('id', id)
-            .limit(1)
-            .single();
-   
-         if(error) {
+         if (!data) {
             return NextResponse.json({
-               error: 'Failed to fetch devices'
-            }, { status: 500});
+               success: false,
+               error: 'Registered device not found'
+            }, { status: 404 });
          }
    
          return NextResponse.json({
             success: true,
             data 
-         }, { status: 200 })
+         }, { status: 200 });
    
       } catch (error) {
    

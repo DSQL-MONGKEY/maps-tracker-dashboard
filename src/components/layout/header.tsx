@@ -5,7 +5,6 @@ import { Breadcrumbs } from '../breadcrumbs';
 import SearchInput from '../search-input';
 import { UserNav } from './user-nav';
 import { ThemeSelector } from '../themes/theme-selector';
-import { ModeToggle } from './ThemeToggle/theme-toggle';
 import CtaGithub from './cta-github';
 import { ThemeModeToggle } from '../themes/theme-mode-toggle';
 

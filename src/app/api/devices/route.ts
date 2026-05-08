@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     // Properti deviceCode otomatis dipetakan ke kolom device_code oleh Prisma sesuai skema
     const data = await prisma.device.create({
       data: {
-        device_code: deviceCode,
+        deviceCode,
         name,
         description,
         status,
