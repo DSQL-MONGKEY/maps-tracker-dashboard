@@ -11,11 +11,11 @@ import { formatDate } from '@/lib/format';
 export const columns: ColumnDef<Devices>[] = [
   {
     id: 'deviceCode',
-    accessorKey: 'device_code',
+    accessorKey: 'deviceCode',
     header: ({ column }: { column: Column<Devices, unknown> }) => (
       <DataTableColumnHeader column={column} title='Device Code' />
     ),
-    cell: ({ cell }) => <div>{cell.getValue<Devices['device_code']>()}</div>,
+    cell: ({ cell }) => <div>{cell.getValue<Devices['deviceCode']>()}</div>,
     enableColumnFilter: true
   },
   {
@@ -44,7 +44,10 @@ export const columns: ColumnDef<Devices>[] = [
       const Icon = status ? CheckCircle2 : XCircle;
 
       return (
-        <Badge variant={status ? 'secondary' : 'destructive'} className='capitalize'>
+        <Badge
+          variant={status ? 'secondary' : 'destructive'}
+          className='capitalize'
+        >
           <Icon />
           {status ? 'Active' : 'Inactive'}
         </Badge>
@@ -66,35 +69,31 @@ export const columns: ColumnDef<Devices>[] = [
     header: 'Description'
   },
   {
-    accessorKey: 'created_at',
-    header: 'Created At',
+    accessorKey: 'createdAt',
+    header: 'Created at',
     cell: ({ cell }) => {
-      const formattedDate = formatDate(cell.getValue<Devices['created_at']>(), {
+      const formattedDate = formatDate(cell.getValue<Devices['createdAt']>(), {
         hour: 'numeric',
         minute: 'numeric',
         second: 'numeric',
         hour12: false
       });
 
-      return (
-        <span>{formattedDate}</span>
-      )
+      return <span>{formattedDate}</span>;
     }
   },
   {
-    accessorKey: 'updated_at',
-    header: 'Updated At',
+    accessorKey: 'updatedAt',
+    header: 'Updated at',
     cell: ({ cell }) => {
-      const formattedDate = formatDate(cell.getValue<Devices['updated_at']>(), {
+      const formattedDate = formatDate(cell.getValue<Devices['updatedAt']>(), {
         hour: 'numeric',
         minute: 'numeric',
         second: 'numeric',
         hour12: false
       });
 
-      return (
-        <span>{formattedDate}</span>
-      )
+      return <span>{formattedDate}</span>;
     }
   },
 

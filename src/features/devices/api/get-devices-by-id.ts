@@ -1,35 +1,15 @@
-import { supabase } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import prisma from '@/lib/prisma';
 
 export async function getDeviceById(id: string) {
-   try {
-   
-         const { data, error } = await supabase
-            .from('devices')
-            .select('*')
-            .eq('id', id)
-            .single();
-   
-         if(error) {
-            return NextResponse.json({
-               error: 'Failed to fetch devices'
-            }, { status: 500});
-         }
-   
-         return NextResponse.json({
-            success: true,
-            data 
-         }, { status: 200 })
-   
-      } catch (error) {
-   
-         if(error instanceof Error) {
-            return NextResponse.json({
-               success: false,
-               error: 'An error occurred while fetching devices',
-               details: error.message
-            }, { status: 500 });
-         }
-   
-      }
+  try {
+    // Prisma: Ambil data secara langsung
+    const device = await prisma.device.findUnique({
+      where: { id }
+    });
+
+    // Akan mereturn objek device jika ada, atau null jika id tidak ditemukan
+    return device;
+  } catch (error) {
+    return null;
+  }
 }

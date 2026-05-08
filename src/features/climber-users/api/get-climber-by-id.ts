@@ -1,34 +1,24 @@
-import { supabase } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import prisma from '@/lib/prisma';
 
 export const getClimberById = async (climberId: string) => {
-   try {
-      const { data:climber, error:climberError } = await supabase
-         .from('climber_users')
-         .select(`*, register_devices(device_id)`)
-         .eq('id', climberId)
-         .single();
-
-      if (climberError) {
-         return NextResponse.json({
-            error: 'Failed to fetch climber'
-         }, { status: 500 });
+  try {
+    // Prisma: findUnique dengan include untuk mereplikasi join relasi
+    const climber = await prisma.climberUser.findUnique({
+      where: {
+        id: climberId
+      },
+      include: {
+        // Mengambil semua kolom climber, plus HANYA kolom deviceId dari tabel registerDevices
+        registerDevices: {
+          select: {
+            deviceId: true
+          }
+        }
       }
+    });
 
-      return NextResponse.json({
-         success: true,
-         data: climber
-      }, { status: 200 });
-   
-   } catch(error) {
-
-      if (error instanceof Error) {
-         return NextResponse.json({
-            success: false,
-            error: 'An error occurred while fetching climber',
-            details: error.message
-         }, { status: 500 });
-      }
-
-   }
-}
+    return climber;
+  } catch (error) {
+    return null;
+  }
+};

@@ -36,20 +36,23 @@ const formSchema = z.object({
   holderName: z.string().min(2, {
     message: 'Holder name must be at least 2 characters'
   }),
-  latitude: z.coerce.number()
-  .min(-90, {
-    message: 'Latitude must be ≥ -90'
-  }).max(90, {
-    message: 'Latitude must be ≤ 90'
-  }),
-  longitude: z.coerce.number()
-  .min(-180, {
-    message: 'Longitude must be ≥ -180'
-  })
-  .max(180, {
-    message: 'Longitude must be ≤ 180'
-  }),
-  emergencyStatus: z.boolean(),
+  latitude: z.coerce
+    .number()
+    .min(-90, {
+      message: 'Latitude must be ≥ -90'
+    })
+    .max(90, {
+      message: 'Latitude must be ≤ 90'
+    }),
+  longitude: z.coerce
+    .number()
+    .min(-180, {
+      message: 'Longitude must be ≥ -180'
+    })
+    .max(180, {
+      message: 'Longitude must be ≤ 180'
+    }),
+  emergencyStatus: z.boolean()
 });
 
 export default function TrackingsForm({
@@ -62,11 +65,11 @@ export default function TrackingsForm({
   const router = useRouter();
 
   const defaultValues = {
-    deviceId: initialData?.devices.name || 'Choose Device',
-    holderName: initialData?.climber_users?.name || '',
+    deviceId: initialData?.device.name || 'Choose Device',
+    holderName: initialData?.climberUser?.name || '',
     latitude: initialData?.latitude || 0,
     longitude: initialData?.longitude || 0,
-    emergencyStatus: initialData?.is_emergency || false
+    emergencyStatus: initialData?.isEmergency || false
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -74,10 +77,9 @@ export default function TrackingsForm({
     values: defaultValues
   });
 
+  const { data: response, error } = useSWR('/api/devices', fetcher);
 
-  const { data:response, error } = useSWR('/api/devices', fetcher);
-
-  if(error) {
+  if (error) {
     toast('Failed...', {
       description: 'Error occured while fetching device data'
     });
@@ -85,48 +87,46 @@ export default function TrackingsForm({
 
   const { data } = response ?? [];
 
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await addTracking({...values});
-      
+      const response = await addTracking({ ...values });
+
       const result = await response;
-      
-      if(!result.success) {
+
+      if (!result.success) {
         toast('Request Failed', {
           duration: 4000,
-          description: result.error || 'An error occurred while adding tracking record',
+          description:
+            result.error || 'An error occurred while adding tracking record'
         });
         return;
       }
 
       const data = await response.data;
 
-    toast('Request sent successfully', {
-      description: formatDate(data[0].created_at,  {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false,
-      }),
-    });
-
-    router.push('/dashboard/trackings');
-
-    } catch(error) {
-      if(error instanceof Error) {
-        toast('Error failed to add record', {
-        description: error.message,
-        action: {
-          label: "Close",
-          onClick: () => null 
-        },
+      toast('Request sent successfully', {
+        description: formatDate(data[0].created_at, {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false
+        })
       });
+
+      router.push('/dashboard/trackings');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast('Error failed to add record', {
+          description: error.message,
+          action: {
+            label: 'Close',
+            onClick: () => null
+          }
+        });
       }
     }
   }
-
 
   return (
     <Card className='mx-auto w-full'>
@@ -151,17 +151,12 @@ export default function TrackingsForm({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue
-                            placeholder='Choose Device'
-                          />
+                          <SelectValue placeholder='Choose Device' />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent position='popper' className='h-32 '>
-                          {data?.map((device: Devices) => (
-                          <SelectItem 
-                            key={device.id}
-                            value={device.id}
-                          >
+                      <SelectContent position='popper' className='h-32'>
+                        {data?.map((device: Devices) => (
+                          <SelectItem key={device.id} value={device.id}>
                             {device.name}
                           </SelectItem>
                         ))}
@@ -226,26 +221,20 @@ export default function TrackingsForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Emergency Status</FormLabel>
-                      <Select
-                        onValueChange={(value) => field.onChange(Boolean(value))}
-                        value={field.value.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder="Choose status"
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value={'true'}>
-                            True
-                          </SelectItem>
-                          <SelectItem value={'false'}>
-                            False
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                    <Select
+                      onValueChange={(value) => field.onChange(Boolean(value))}
+                      value={field.value.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Choose status' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={'true'}>True</SelectItem>
+                        <SelectItem value={'false'}>False</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormItem>
                 )}
               />

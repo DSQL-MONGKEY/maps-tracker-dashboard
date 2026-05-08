@@ -30,11 +30,14 @@ import { useRouter } from 'next/navigation';
 import { formatDate } from '@/lib/format';
 
 const formSchema = z.object({
-  deviceCode: z.string().min(4,{
-    message: 'Device code must be at least 4 characters.'
-  }).max(8, {
-    message: 'Device code must not exceed 8 characters.'
-  }),
+  deviceCode: z
+    .string()
+    .min(4, {
+      message: 'Device code must be at least 4 characters.'
+    })
+    .max(8, {
+      message: 'Device code must not exceed 8 characters.'
+    }),
   name: z.string().min(2, {
     message: 'Product name must be at least 2 characters.'
   }),
@@ -48,20 +51,20 @@ const formSchema = z.object({
 export default function DeviceForm({
   initialData,
   pageTitle,
-  method,
+  method
 }: {
-  initialData: Devices | null;
+  initialData?: Devices | null;
   pageTitle: string;
-  method?: string | null
+  method?: string | null;
 }) {
   const router = useRouter();
 
   const defaultValues = {
-    deviceCode: initialData?.device_code || '',
+    deviceCode: initialData?.deviceCode || '',
     name: initialData?.name || '',
     status: initialData?.status || true,
     type: initialData?.type || '',
-    description: initialData?.description || '',
+    description: initialData?.description || ''
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -72,57 +75,54 @@ export default function DeviceForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const response = await Device(
-        {...values}, 
-        initialData?.id ?? '', 
+        { ...values },
+        initialData?.id ?? '',
         method ?? 'POST'
       );
 
       const result = await response;
 
-      if(!result.success) {
+      if (!result.success) {
         toast('Request Failed', {
           duration: 4000,
-          description: result.error || 'Terjadi kesalahan validasi',
+          description: result.error || 'Terjadi kesalahan validasi'
         });
         return;
       }
 
       const data = result.data;
 
-      const formattedDate = method == 'PUT' ? (
-        formatDate(data.updated_at,  {
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: false,
-        })
-      ) : (
-        formatDate(data[0]?.created_at,  {
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: false,
-        })
-      );
-
+      const formattedDate =
+        method == 'PUT'
+          ? formatDate(data.updatedAt, {
+              hour: 'numeric',
+              minute: 'numeric',
+              second: 'numeric',
+              hour12: false
+            })
+          : formatDate(data[0]?.createdAt, {
+              hour: 'numeric',
+              minute: 'numeric',
+              second: 'numeric',
+              hour12: false
+            });
 
       toast('Request successfully', {
         duration: 5000,
-        description: formattedDate,
+        description: formattedDate
       });
 
       mutate('/api/devices');
       router.push('/dashboard/devices');
-
-    } catch(error) {
-      if(error instanceof Error) {
+    } catch (error) {
+      if (error instanceof Error) {
         toast('Error request failed ', {
           duration: 3000,
           description: error.message,
           action: {
-            label: "Close",
-            onClick: () => null 
-          },
+            label: 'Close',
+            onClick: () => null
+          }
         });
       }
     }
@@ -172,7 +172,9 @@ export default function DeviceForm({
                   <FormItem>
                     <FormLabel>Device Status</FormLabel>
                     <Select
-                      onValueChange={(value) => field.onChange(value === 'true')}
+                      onValueChange={(value) =>
+                        field.onChange(value === 'true')
+                      }
                       value={String(field.value)}
                     >
                       <FormControl>
@@ -181,12 +183,8 @@ export default function DeviceForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value={'true'}>
-                          Active
-                        </SelectItem>
-                        <SelectItem value={'false'}>
-                          Inactive
-                        </SelectItem>
+                        <SelectItem value={'true'}>Active</SelectItem>
+                        <SelectItem value={'false'}>Inactive</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

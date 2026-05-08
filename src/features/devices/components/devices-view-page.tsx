@@ -16,18 +16,16 @@ export default async function DeviceViewPage({
   if (deviceId !== 'new') {
     const response = await getDeviceById(deviceId);
 
-    const { data } =  response ? await response.json() : {
-      data: null
-    };
-
-    device = data;
-
-    if(!data) {
+    if (!response) {
       notFound();
     }
+
+    device = response;
 
     method = 'PUT';
   }
 
-  return <DeviceForm initialData={device} pageTitle={pageTitle} method={method} />;
+  return (
+    <DeviceForm initialData={device} pageTitle={pageTitle} method={method} />
+  );
 }

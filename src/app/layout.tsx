@@ -1,17 +1,21 @@
 import Providers from '@/components/layout/providers';
 import { Toaster } from '@/components/ui/sonner';
 import { fontVariables } from '@/lib/font';
-import ThemeProvider from '@/components/layout/ThemeToggle/theme-provider';
 import { cn } from '@/lib/utils';
 import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import NextTopLoader from 'nextjs-toploader';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
+// @ts-ignore
 import 'leaflet/dist/leaflet.css';
+// @ts-ignore
 import 'leaflet-geosearch/dist/geosearch.css';
-import './globals.css';
-import './theme.css';
+import '../styles/globals.css';
+import '../styles/theme.css';
 import InitUserRole from '@/components/layout/init-user-role';
+import { DEFAULT_THEME, THEMES } from '@/components/themes/theme.config';
+import ThemeProvider from '@/components/themes/theme-provider';
+import { ActiveThemeProvider } from '@/components/themes/active-theme';
 
 const META_THEME_COLORS = {
   light: '#ffffff',
@@ -20,7 +24,7 @@ const META_THEME_COLORS = {
 
 export const metadata: Metadata = {
   title: 'LoRa Tracking Dashboard',
-  description: 'Tracking system for LoRa devices',
+  description: 'Tracking system for LoRa devices'
 };
 
 export const viewport: Viewport = {
@@ -34,10 +38,11 @@ export default async function RootLayout({
 }) {
   const cookieStore = await cookies();
   const activeThemeValue = cookieStore.get('active_theme')?.value;
-  const isScaled = activeThemeValue?.endsWith('-scaled');
+  const isValidTheme = THEMES.some((t) => t.value === activeThemeValue);
+  const themeToApply = isValidTheme ? activeThemeValue! : DEFAULT_THEME;
 
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang='en' suppressHydrationWarning data-theme={themeToApply}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -53,9 +58,7 @@ export default async function RootLayout({
       </head>
       <body
         className={cn(
-          'bg-background overflow-hidden overscroll-none font-sans antialiased',
-          activeThemeValue ? `theme-${activeThemeValue}` : '',
-          isScaled ? 'theme-scaled' : '',
+          'bg-background overflow-x-hidden overscroll-none font-sans antialiased',
           fontVariables
         )}
       >
@@ -68,11 +71,13 @@ export default async function RootLayout({
             disableTransitionOnChange
             enableColorScheme
           >
-            <Providers activeThemeValue={activeThemeValue as string}>
-              <Toaster />
-              <InitUserRole />
-              {children}
-            </Providers>
+            <ActiveThemeProvider>
+              <Providers activeThemeValue={themeToApply}>
+                <Toaster />
+                <InitUserRole />
+                {children}
+              </Providers>
+            </ActiveThemeProvider>
           </ThemeProvider>
         </NuqsAdapter>
       </body>

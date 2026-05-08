@@ -38,12 +38,16 @@ import {
   IconHierarchy3,
   IconEscalatorUp,
   IconRegistered,
+  IconPalette,
+  IconBrightness
 } from '@tabler/icons-react';
 
 export type Icon = React.ComponentType<IconProps>;
 
 export const Icons = {
   devices: IconBrandAppleArcade,
+  brightness: IconBrightness,
+  palette: IconPalette,
   register: IconRegistered,
   climber: IconEscalatorUp,
   maps: IconMap2,

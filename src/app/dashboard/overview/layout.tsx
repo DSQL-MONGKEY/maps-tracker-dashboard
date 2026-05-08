@@ -17,8 +17,7 @@ export default function OverViewLayout({
   devices,
   climbers,
   register_device,
-  trackings,
-  maps
+  trackings
 }: IOverview) {
   return (
     <PageContainer>
@@ -37,8 +36,7 @@ export default function OverViewLayout({
         </div>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7'>
           <div className='col-span-4'></div>
-          <div className='col-span-4 md:col-span-3'>
-          </div>
+          <div className='col-span-4 md:col-span-3'></div>
           <div className='col-span-4'></div>
           <div className='col-span-4 md:col-span-3'></div>
         </div>

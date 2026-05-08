@@ -16,7 +16,7 @@ export default async function ClimberViewPage({
   if (climbId !== 'new') {
     const response = await getClimberById(climbId);
 
-    const { data } =  response ? await response.json() : {
+    const data = response ?? {
       data: null
     };
 
@@ -25,10 +25,16 @@ export default async function ClimberViewPage({
     climberUserData = data;
     method = 'PUT';
 
-    if(!data) {
+    if (!data) {
       notFound();
     }
   }
 
-  return <ClimberForm initialData={climberUserData} pageTitle={pageTitle} method={method} />;
+  return (
+    <ClimberForm
+      initialData={climberUserData}
+      pageTitle={pageTitle}
+      method={method}
+    />
+  );
 }
