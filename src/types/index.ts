@@ -1,4 +1,5 @@
 import { Icons } from '@/components/icons';
+import { DeviceType } from '@prisma/client';
 
 export interface NavItem {
   title: string;
@@ -47,7 +48,16 @@ export interface Tracking {
   snr: string;
   latitude: number;
   longitude: number;
+  deviceTime: string;
+  temperature: number;
+  pressure: number;
+  humidity: number;
+  heartRate: number;
+  spo2: number;
   isEmergency: boolean;
+  isFallen: boolean;
+  hopCount: number;
+  routingPath: number[];
   created_at: string;
   updated_at: string;
   device: {
@@ -60,14 +70,14 @@ export interface Tracking {
 }
 
 export interface Devices {
-  created_at: string;
-  updated_at: string;
-  device_code: string;
-  description: string;
   id: string;
   name: string;
-  status: boolean;
-  type: string;
+  createdAt: string | Date;
+  updatedAt: string | Date | null;
+  deviceCode: string | null;
+  description: string | null;
+  status: boolean | null;
+  type: DeviceType | null;
 }
 
 export interface RegisterDevices {
@@ -89,10 +99,10 @@ export interface RegisterDevices {
 
 export interface ClimberUser {
   id: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  created_at: string;
-  updated_at: string;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  created_at: string | Date;
+  updated_at: string | Date | null;
 }
