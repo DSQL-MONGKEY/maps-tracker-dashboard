@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
 export async function POST(req: Request) {
   try {
@@ -114,26 +114,72 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const data = await prisma.tracking.findMany({
-      include: {
-        device: {
-          select: { name: true, type: true }
-        },
-        climberUser: {
-          select: { name: true }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const perPage = parseInt(searchParams.get('perPage') || '10', 10);
+    const search = searchParams.get('search') || '';
+    const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
+
+    const skip = (page - 1) * perPage;
+
+    // Build where clause for search and category filters
+    const where: Record<string, unknown> = {};
+
+    if (search) {
+      where.OR = [
+        { device: { name: { contains: search, mode: 'insensitive' } } },
+        { climberUser: { name: { contains: search, mode: 'insensitive' } } }
+      ];
+    }
+
+    if (categories.length > 0) {
+      const hasEmergency = categories.includes('true');
+      const hasFallen = categories.includes('false');
+
+      if (hasEmergency && hasFallen) {
+        where.AND = [
+          { isEmergency: true },
+          { isFallen: false }
+        ];
+      } else if (hasEmergency) {
+        where.isEmergency = true;
+      } else if (hasFallen) {
+        where.isFallen = false;
       }
-    });
+    }
+
+    const [data, totalCount] = await Promise.all([
+      prisma.tracking.findMany({
+        where,
+        include: {
+          device: {
+            select: { name: true, type: true }
+          },
+          climberUser: {
+            select: { name: true }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        skip,
+        take: perPage
+      }),
+      prisma.tracking.count({ where })
+    ]);
+
+    const totalPages = Math.ceil(totalCount / perPage);
 
     return NextResponse.json(
       {
         success: true,
-        data
+        data,
+        totalCount,
+        page,
+        perPage,
+        totalPages
       },
       { status: 200 }
     );

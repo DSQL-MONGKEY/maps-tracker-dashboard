@@ -1,35 +1,53 @@
 'use client';
 
-import useSWR from "swr";
-import { TrackingDataTable } from "./trackings-tables";
-import { columns } from "./trackings-tables/columns";
-import { fetcher } from "@/lib/fetcher";
-import { toast } from "sonner";
-import { DataTableSkeleton } from "@/components/ui/table/data-table-skeleton";
+import useSWR from 'swr';
+import { TrackingDataTable } from './trackings-tables';
+import { columns } from './trackings-tables/columns';
+import { fetcher } from '@/lib/fetcher';
+import { toast } from 'sonner';
+import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
+import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function TrackingsListingTable({ filter }: any) {
-   const { data:response, error, isLoading } = useSWR('/api/trackings', fetcher);
+export default function TrackingsListingTable() {
+  const [page] = useQueryState('page', parseAsInteger.withDefault(1));
+  const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10));
+  const [search] = useQueryState('name', parseAsString.withDefault(''));
+  const [categories] = useQueryState('category', parseAsString.withDefault(''));
 
-   if(isLoading) return (
+  const params = new URLSearchParams();
+  params.set('page', String(page));
+  params.set('perPage', String(perPage));
+  if (search) params.set('search', search);
+  if (categories) params.set('categories', categories);
+
+  const apiUrl = `/api/trackings?${params.toString()}`;
+  const { data: response, error, isLoading } = useSWR(apiUrl, fetcher, {
+    keepPreviousData: true,
+    revalidateOnFocus: false
+  });
+
+  // Loading state (show skeleton only on first load)
+  if (isLoading && !response) {
+    return (
       <DataTableSkeleton columnCount={5} rowCount={8} filterCount={2} />
-   )
+    )
+  }
 
-   const trackingData = response.data ?? [];
-   const totalItems = response.data.length ?? 0;
+  if (error) {
+    toast('Error fetching data', {
+      description: `details: ${error}`
+    })
+    return null;
+  }
 
-   
-   if(error) {
-      toast('Error fetching data', {
-         description: `details: ${error}`
-      })
-   }
+  const trackingData = response?.data ?? [];
+  const totalItems = response?.totalCount ?? 0;
 
-   return (
-      <TrackingDataTable
-         data={trackingData}
-         totalItems={totalItems}
-         columns={columns}
-      />
-   );
+  return (
+    <TrackingDataTable
+      data={trackingData}
+      totalItems={totalItems}
+      columns={columns}
+    />
+  );
 }
