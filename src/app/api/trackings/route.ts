@@ -71,6 +71,12 @@ export async function POST(req: Request) {
     // Jika GPS belum fix (timestamp 0), fallback ke null agar database rapi
     const deviceTimeObj = timestamp > 0 ? new Date(timestamp * 1000) : null;
 
+    const receivedTimestamp = body.timestamp;
+    const MIN_VALID_TS = 1577836800;
+    const finalTimestamp = (receivedTimestamp && receivedTimestamp > MIN_VALID_TS)
+    ? receivedTimestamp
+    : Math.floor(Date.now() / 1000);
+
     // 3. Insert Tracking Data ke Database
     const trackingData = await prisma.tracking.create({
       data: {
@@ -78,7 +84,7 @@ export async function POST(req: Request) {
         climberUserId: climberId,
         latitude,
         longitude,
-        deviceTime: deviceTimeObj, // Waktu aktual dari GPS
+        deviceTime: finalTimestamp, // Waktu aktual dari GPS
         temperature,
         pressure,
         humidity,
