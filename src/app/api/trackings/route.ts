@@ -69,9 +69,8 @@ export async function POST(req: Request) {
 
     // Konversi UNIX epoch (detik) dari GPS ke objek Date JS (milidetik)
     // Jika GPS belum fix (timestamp 0), fallback ke null agar database rapi
-    const deviceTimeObj = timestamp > 0 ? new Date(timestamp * 1000) : null;
 
-    const receivedTimestamp = body.timestamp;
+    const receivedTimestamp = timestamp;
     const MIN_VALID_TS = 1577836800;
     const finalTimestamp = (receivedTimestamp && receivedTimestamp > MIN_VALID_TS)
     ? receivedTimestamp
