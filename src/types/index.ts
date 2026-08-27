@@ -41,32 +41,62 @@ export type RouteParams = {
   };
 };
 
+// 1. Tipe untuk Membaca Data (Hasil dari GET API & Prisma include)
+// Digunakan pada Table, List, atau initialData di Form
 export interface Tracking {
   id: string;
   deviceId: string;
-  rssi: string;
-  snr: string;
+  rssi: string | number; // Fleksibel jika dari backend dikonversi
+  snr: string | number;
   latitude: number;
   longitude: number;
-  deviceTime: string;
-  temperature: number;
-  pressure: number;
-  humidity: number;
-  heartRate: number;
-  spo2: number;
+  deviceTime?: string;
+  temperature?: number;
+  pressure?: number;
+  humidity?: number;
+  heartRate?: number;
+  spo2?: number;
   isEmergency: boolean;
   isFallen: boolean;
-  hopCount: number;
-  routingPath: number[];
-  created_at: string;
-  updated_at: string;
+  hopCount?: number;
+  routingPath?: number[];
+  
+  // Catatan: Jika API Anda langsung dari Prisma, biasanya menjadi createdAt (camelCase)
+  // Pastikan sesuai dengan output JSON NextResponse Anda.
+  createdAt?: string; 
+  updatedAt?: string; 
+  
+  // Relasi
   device: {
     name: string;
     type: string;
   };
-  climberUser: {
+  climberUser?: {
     name: string;
+    id: string;
   };
+}
+
+// 2. Tipe untuk Mengirim Data (Payload POST/PUT API)
+// Digunakan sebagai parameter di fungsi addTracking()
+export interface TTracking {
+  deviceId: string;
+  climberUserId: string;
+  latitude: number;
+  longitude: number;
+  
+  // Sesuai dengan snake_case yang diharapkan oleh route.ts Anda
+  temperature?: number;
+  pressure?: number;
+  humidity?: number;
+  heart_rate?: number;
+  spo2?: number;
+  
+  gateway_rssi?: number;
+  gateway_snr?: number;
+  hop_count?: number;
+  is_emergency: boolean;
+  is_fallen: boolean;
 }
 
 export interface Devices {

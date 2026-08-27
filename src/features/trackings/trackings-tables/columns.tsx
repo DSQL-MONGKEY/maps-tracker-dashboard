@@ -101,7 +101,7 @@ export const columns: ColumnDef<Tracking>[] = [
     header: 'BPM',
     cell: ({ row }) => (
       <span className='font-medium'>
-        {row.original.heartRate > 0 ? row.original.heartRate : '-'}
+        {row.original.heartRate! > 0 || undefined ? row.original.heartRate : '-'}
       </span>
     )
   },
@@ -110,7 +110,7 @@ export const columns: ColumnDef<Tracking>[] = [
     header: 'SpO2',
     cell: ({ row }) => (
       <span className='font-medium text-blue-600 dark:text-blue-400'>
-        {row.original.spo2 > 0 ? `${row.original.spo2}%` : '-'}
+        {row.original.spo2! > 0 || undefined ? `${row.original.spo2}%` : '-'}
       </span>
     )
   },
@@ -208,7 +208,7 @@ export const columns: ColumnDef<Tracking>[] = [
     header: 'Server Time',
     cell: ({ cell }) => {
       const formattedDate = formatDate(
-        cell.getValue<Tracking['created_at']>(),
+        cell.getValue<Tracking['createdAt']>(),
         {
           hour: 'numeric',
           minute: 'numeric',
